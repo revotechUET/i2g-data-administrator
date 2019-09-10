@@ -1,0 +1,22 @@
+{
+  "name": "i2g-data-administrator",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "thenam153 <noilinhtinh016@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/thenam153/i2g-data-administrator",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "file-explorer": "https://github.com/hoangbdUET/file-browser-angular.git",
+    "moment": "^2.24.0",
+    "themify-icons": "^0.1.2"
+  }
+}
