@@ -52,12 +52,14 @@
 					</file-explorer>
 				</div>
 				<div class="hpanel">
-					<file-explorer 	
-								url="https://file-backend.i2g.cloud" 
-								storage-database="storageDatabase"
-								id-project="1"
-								>
-					</file-explorer>
+					<wi-droppable on-drop="self.onDrop">
+						<file-explorer 	
+									url="https://file-backend.i2g.cloud" 
+									storage-database="self.storageDatabaseWiDrop"
+									id-project="1"
+									>
+						</file-explorer>
+					</wi-droppable>
 				</div>
 			</div>
 		</div>
