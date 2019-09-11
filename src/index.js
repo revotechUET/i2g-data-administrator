@@ -1,5 +1,5 @@
 var moduleName = 'i2gDataApp';
-var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual']);
+var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual','angularModalService']);
 
 app.controller('mainCtrl', function($scope, wiApi, $timeout, $http) {
 	console.log('main ctrl');
