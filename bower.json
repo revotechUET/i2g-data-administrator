@@ -17,6 +17,7 @@
   "dependencies": {
     "file-explorer": "https://github.com/hoangbdUET/file-browser-angular.git",
     "moment": "^2.24.0",
-    "themify-icons": "^0.1.2"
+    "themify-icons": "^0.1.2",
+    "async": "^3.1.0"
   }
 }

@@ -1,21 +1,17 @@
 var moduleName = 'i2gDataApp';
-var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual','angularModalService','wiDroppable']);
+var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual','angularModalService','wiDroppable', 'wiDialog']);
 
-app.controller('mainCtrl', function($scope, wiApi, $timeout, $http) {
-	console.log('main ctrl');
-	// $scope.storageDatabase = {
-	// 	company: "I2G",
-	// 	directory: "65554a26e839dfb6fc5bc9f392f15d90764cabe4",
-	// 	name: "I2G-namnt",
-	// }
-	function postPromise(url, data, token = null) {
+app.controller('mainCtrl', function($scope, wiApi, $timeout, $http, wiDialog) {
+	// console.log('main ctrl');
+    let self = this;
+	function postPromise(url, data) {
         return new Promise(function(resolve, reject) {
             $http({
                 method: 'POST',
                 url: url,
                 data: data,
                 headers: {
-                    Authorization: token || window.localStorage.token 
+                    Authorization: window.localStorage.token 
                 }
             }).then((response) => {
                 if (response.data.code === 200) resolve(response.data.content);
@@ -25,12 +21,35 @@ app.controller('mainCtrl', function($scope, wiApi, $timeout, $http) {
             })
         });
     }
-	let self = this;
-	$scope.storageDatabase = {
-		company: "I2G",
-		directory: "3dbd0737b06bce192340608ff19b68109c23e22a",
-		name: "I2G-thangnguyen",
-	}
+    this.$onInit = function() {
+        wiDialog.authenticationDialog(function(userInfo) {
+            console.log(userInfo);
+            postPromise('http://admin.dev.i2g.cloud/user/list', {token: window.localStorage.token})
+            .then(data => {
+                console.log(data);
+                let admin = data.find(i => {
+                    return userInfo.username === i.username;
+                })
+                if(admin) {
+                    postPromise('http://dev.i2g.cloud/project/list', {username: admin.username})
+                    .then(proj => {
+                        $timeout(() => {
+                            let project = proj[0];
+                            let storage_databases = project.storage_databases[0];
+                            self.storageDatabaseAdmin = {
+                                company: storage_databases.company,
+                                directory: storage_databases.input_directory,
+                                name: storage_databases.name,
+                            }
+                        })
+                    })
+                }
+                $timeout(() => {
+                    self.listUser = data;
+                })
+            })  
+        })
+    }
 	this.getLabel = function(node) {
 		return (node || {}).username || (node || {}).name || 'no name';
 	}
@@ -60,7 +79,7 @@ app.controller('mainCtrl', function($scope, wiApi, $timeout, $http) {
         return [];
     }
     this.runMatch = function(node, filter) {
-        return node.name.includes(filter);
+        return node.username.includes(filter); 
     }
     this.getChildrenDataset = function(node) {
         return [];
@@ -68,8 +87,7 @@ app.controller('mainCtrl', function($scope, wiApi, $timeout, $http) {
     this.clickFn = function(event,node,selectIds,rootnode) {
     	console.log(node);
     	if(node.projects) return;
-
-    	postPromise('http://dev.i2g.cloud/project/list-of-all-user', {users: [node.username]}, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhvYW5nIiwicm9sZSI6MCwiY29tcGFueSI6IkkyRyIsImlhdCI6MTU2ODEwNzczNSwiZXhwIjoxNTY4MjgwNTM1fQ._61hsPqDL7U3xE2H_TTVWgR1_IE1YhVKnCyMVja4S-s')
+    	postPromise('http://dev.i2g.cloud/project/list', {username: node.username})
     	.then(data => {
     		console.log('list project', data);
     		$timeout(() => {
@@ -79,28 +97,82 @@ app.controller('mainCtrl', function($scope, wiApi, $timeout, $http) {
     }
     self.listProject = [];
     self.listUser = [];
-    this.$onInit = function() {
-        postPromise('http://admin.dev.i2g.cloud/user/list', {}, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhvYW5nIiwicm9sZSI6MCwiY29tcGFueSI6IkkyRyIsImlhdCI6MTU2ODEwNzczNSwiZXhwIjoxNTY4MjgwNTM1fQ._61hsPqDL7U3xE2H_TTVWgR1_IE1YhVKnCyMVja4S-s')
-        .then(data => {
-        	console.log(data);
-        	$timeout(() => {
-        		self.listUser = data;
-        	})
-        })
-    }
-    self.storageDatabaseWiDrop = {
-        company: "I2G",
-        directory: "3dbd0737b06bce192340608ff19b68109c23e22a",
-        name: "I2G-thangnguyen",
+    self.storage_databases = {
     }
     this.onDrop = function(event, helper, data) {
-        console.log(data);
         $timeout(() => {
+            let project = data[0];
+            let storage_databases = project.storage_databases[0];
             self.storageDatabaseWiDrop = {
-                                         company: "I2G",
-                                         directory: "65554a26e839dfb6fc5bc9f392f15d90764cabe4",
-                                         name: "I2G-namnt",
-                                        }
+                company: storage_databases.company,
+                directory: storage_databases.input_directory,
+                name: storage_databases.name,
+            }
         })
     }
+    this.copy = function() {
+        console.log('copy', self.admin, self.user);
+        if(self.clickAdmin) {
+            if(!self.admin.selectedList) return;
+            self.pasteList = self.admin.selectedList;
+            // self.pasteList.action = action;
+        }
+    }
+    this.cut = function() {
+        console.log('cut');
+    }
+    this.paste = function() {
+        // console.log('paste');
+        if(self.pasteList) {
+            async.eachSeries(self.pasteList, (file, next) => {
+              let from = `from=${encodeURIComponent(file.path)}&`;
+              let dest = `dest=${encodeURIComponent('/' + self.user.storageDatabase.company + '/' + self.user.storageDatabase.directory + '/' + self.user.currentPath.map(c => c.rootName).join('/'))}`;
+
+              self.admin.httpGet(`${self.user.copyUrl + from + dest} &skipCheckingUrl=${encodeURIComponent(true)}`, res => {
+                console.log(res);
+                next();
+              })
+            }, err => {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log('===done');
+              }
+              // self.goTo(self.currentPath.length - 1);    
+            });
+        }
+    }
+    this.admin;
+    this.user;
+    this.setContainerAdmin = function(admin) {
+        self.admin = admin;
+    }
+    this.setContainerUser = function(user) {
+        self.user = user;
+    }
+    $scope.$watch(() => {
+        return self.admin;
+    }, (newData, oldData) => {
+        console.log(newData);
+    })
+    this.httpGet = function (url, cb) {
+        self.requesting = !self.requesting;
+        let reqOptions = {
+          method: 'GET',
+          url: url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Referrer-Policy': 'no-referrer',
+            'Authorization': window.localStorage.getItem('token'),
+            'Storage-Database': JSON.stringify(self.storageDatabase)
+          }
+        };
+        $http(reqOptions).then(result => {
+          self.requesting = !self.requesting;
+          cb(result);
+        }, err => {
+          self.requesting = !self.requesting;
+          console.log(err);
+        });
+    };
 });
