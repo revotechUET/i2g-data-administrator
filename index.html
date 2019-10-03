@@ -44,25 +44,31 @@
 <body>
     <div ng-app="i2gDataApp" ng-controller="mainCtrl as self" style="width: 100%;height: 100vh;position: relative;">
         <div style="display:flex; flex-direction: column;width: calc(100% - 15px);height: 100%;margin-left: 15px;">
-            <div class="menu">
-                <div ng-click="self.copyOrCut('copy')">
+            <div class="menu" style="display: flex;">
+                <div style="margin: 8px;" ng-click="self.copyOrCut('copy')">
                     copy
                 </div>
-                <div ng-click="self.copyOrCut('cut')">
+                <div style="margin: 8px;" ng-click="self.copyOrCut('cut')">
                     cut
                 </div>
-                <div ng-click="self.paste()">
+                <div style="margin: 8px;" ng-click="self.paste()">
                     paste
+                </div>
+                <div style="margin: 8px;" ng-click="self.addProjectStorage();">
+                    add project storage
+                </div>
+                <div style="margin: 8px;" ng-click="self.removeProjectStorage();">
+                    remove project storage
                 </div>
             </div>
             <div style="border:1px solid gray;overflow: hidden;display: flex;flex:1">
-                <div class="hpanel">
-                    <file-explorer url="http://file-backend.dev.i2g.cloud" storage-database="self.storageDatabaseAdmin" id-project="1" set-container="self.setContainerAdmin" ng-click="self.clickAdmin = true;">
+                <div class="hpanel" style="width: 30%">
+                    <file-explorer ng-click="self.onClickFileExplorer(self.getContainerAdmin());" url="http://file-backend.dev.i2g.cloud" storage-database="self.storageDatabaseAdmin" id-project="1" set-container="self.setContainerAdmin">
                     </file-explorer>
                 </div>
-                <div class="hpanel">
-                    <wi-droppable style="width: 100%;height: 100%;" on-drop="self.onDrop" container-style="{'width': '100%', 'height': '100%'}">
-                        <file-explorer url="http://file-backend.dev.i2g.cloud" storage-database="self.storageDatabaseWiDrop" id-project="1" set-container="self.setContainerUser" ng-click="self.clickAdmin = false;">
+                <div class="hpanel" style="width: 70%;display: flex;">
+                    <wi-droppable ng-repeat="projStorage in self.listProjectStorage track by $index" style="height: 100%;flex: 1;" on-drop="self.onDrop" container-style="{'width': '100%', 'height': '100%'}">
+                        <file-explorer ng-click="self.onClickFileExplorer(self.getContainerUser());" url="http://file-backend.dev.i2g.cloud" storage-database="self.storageDatabaseWiDrop" id-project="1" set-container="self.setContainerUser">
                         </file-explorer>
                     </wi-droppable>
                 </div>

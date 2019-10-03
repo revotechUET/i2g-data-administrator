@@ -4,24 +4,11 @@ var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtu
 app.controller('mainCtrl', function($scope, wiApi, $timeout, $http, wiDialog) {
     // console.log('main ctrl');
     let self = this;
-
-    function postPromise(url, data) {
-        return new Promise(function(resolve, reject) {
-            $http({
-                method: 'POST',
-                url: url,
-                data: data,
-                headers: {
-                    Authorization: window.localStorage.token
-                }
-            }).then((response) => {
-                if (response.data.code === 200) resolve(response.data.content);
-                else reject(new Error(response.data.reason));
-            }, (err) => {
-                reject(err);
-            })
-        });
-    }
+    this.admin;
+    this.user;
+    this.currentUser = this.admin;
+    this.fromUser = null;
+    this.listProjectStorage = [{user: null}];
     this.$onInit = function() {
         wiDialog.authenticationDialog(function(userInfo) {
             console.log(userInfo);
@@ -111,11 +98,12 @@ app.controller('mainCtrl', function($scope, wiApi, $timeout, $http, wiDialog) {
         })
     }
     this.copyOrCut = function(action) {
-        if (self.clickAdmin) {
-            if (!self.admin.selectedList) return;
-            self.pasteList = self.admin.selectedList;
-            self.pasteList.action = action;
-        }
+
+        if (!self.currentUser.selectedList) return;
+        self.fromUser = self.currentUser;
+        self.pasteList = self.currentUser.selectedList;
+        self.pasteList.action = action;
+
     }
     this.paste = function() {
         // console.log('paste');
@@ -124,9 +112,9 @@ app.controller('mainCtrl', function($scope, wiApi, $timeout, $http, wiDialog) {
                 case 'copy':
                     async.eachSeries(self.pasteList, (file, next) => {
                         let from = `from=${encodeURIComponent(file.path)}&`;
-                        let dest = `dest=${encodeURIComponent('/' + self.user.storageDatabase.company + '/' + self.user.storageDatabase.directory + '/' + self.user.currentPath.map(c => c.rootName).join('/'))}`;
+                        let dest = `dest=${encodeURIComponent('/' + self.currentUser.storageDatabase.company + '/' + self.currentUser.storageDatabase.directory + '/' + self.currentUser.currentPath.map(c => c.rootName).join('/'))}`;
 
-                        self.admin.httpGet(`${self.user.copyUrl + from + dest}&skipCheckingUrl=${encodeURIComponent(true)}`, res => {
+                        self.fromUser.httpGet(`${self.currentUser.copyUrl + from + dest}&skipCheckingUrl=${encodeURIComponent(true)}`, res => {
                             console.log(res);
                             next();
                         })
@@ -136,15 +124,16 @@ app.controller('mainCtrl', function($scope, wiApi, $timeout, $http, wiDialog) {
                         } else {
                             console.log('===done');
                         }
-                        // self.goTo(self.currentPath.length - 1);    
+                        self.currentUser.goTo(self.currentUser.currentPath.length - 1);    
+                        self.fromUser.goTo(self.fromUser.currentPath.length - 1);    
                     });
                     break;
                 case 'cut':
                     async.eachSeries(self.pasteList, (file, next) => {
                         let from = `from=${encodeURIComponent(file.path)}&`;
-                        let dest = `dest=${encodeURIComponent('/' + self.user.storageDatabase.company + '/' + self.user.storageDatabase.directory + '/' + self.user.currentPath.map(c => c.rootName).join('/'))}`;
+                        let dest = `dest=${encodeURIComponent('/' + self.currentUser.storageDatabase.company + '/' + self.currentUser.storageDatabase.directory + '/' + self.currentUser.currentPath.map(c => c.rootName).join('/'))}`;
 
-                        self.admin.httpGet(`${self.user.moveUrl + from + dest}&skipCheckingUrl=${encodeURIComponent(true)}`, res => {
+                        self.fromUser.httpGet(`${self.currentUser.moveUrl + from + dest}&skipCheckingUrl=${encodeURIComponent(true)}`, res => {
                             console.log(res);
                             next();
                         })
@@ -154,43 +143,50 @@ app.controller('mainCtrl', function($scope, wiApi, $timeout, $http, wiDialog) {
                         } else {
                             console.log('===done');
                         }
-                        // self.goTo(self.currentPath.length - 1);    
+                        self.currentUser.goTo(self.currentUser.currentPath.length - 1);    
+                        self.fromUser.goTo(self.fromUser.currentPath.length - 1);    
                     });
                     break;
             }
         }
     }
-    this.admin;
-    this.user;
     this.setContainerAdmin = function(admin) {
         self.admin = admin;
     }
     this.setContainerUser = function(user) {
         self.user = user;
     }
-    $scope.$watch(() => {
+    this.onClickFileExplorer = function(user) {
+        console.log(user);
+        self.currentUser = user;
+    }
+    this.getContainerAdmin = function() {
         return self.admin;
-    }, (newData, oldData) => {
-        console.log(newData);
-    })
-    this.httpGet = function(url, cb) {
-        self.requesting = !self.requesting;
-        let reqOptions = {
-            method: 'GET',
-            url: url,
-            headers: {
-                'Content-Type': 'application/json',
-                'Referrer-Policy': 'no-referrer',
-                'Authorization': window.localStorage.getItem('token'),
-                'Storage-Database': JSON.stringify(self.storageDatabase)
-            }
-        };
-        $http(reqOptions).then(result => {
-            self.requesting = !self.requesting;
-            cb(result);
-        }, err => {
-            self.requesting = !self.requesting;
-            console.log(err);
+    }
+    this.getContainerUser = function(index = 0) {
+        return self.user;
+    }
+    function postPromise(url, data) {
+        return new Promise(function(resolve, reject) {
+            $http({
+                method: 'POST',
+                url: url,
+                data: data,
+                headers: {
+                    Authorization: window.localStorage.token
+                }
+            }).then((response) => {
+                if (response.data.code === 200) resolve(response.data.content);
+                else reject(new Error(response.data.reason));
+            }, (err) => {
+                reject(err);
+            })
         });
-    };
+    }
+    this.addProjectStorage = function() {
+        self.listProjectStorage.push({user: null});
+    }
+    this.removeProjectStorage = function() {
+        self.listProjectStorage.push({user: null});
+    }
 });
