@@ -47,6 +47,14 @@ app.controller('mainCtrl', function($scope, wiApi, $timeout, $http, wiDialog) {
                             self.listUser = data;
                         })
                     })
+                    .catch((err) => {
+                        if(err.status === 401) {
+                            delete window.localStorage.rememberAuth;
+                            wiDialog.authenticationDialog(function(userInfo) {
+                                onInit();
+                            })
+                        }
+                    })
     }
     this.getLabel = function(node) {
         return (node || {}).username || (node || {}).name || 'no name';
