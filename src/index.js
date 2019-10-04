@@ -8,7 +8,13 @@ app.controller('mainCtrl', function($scope, wiApi, $timeout, $http, wiDialog) {
     this.user;
     this.currentUser = this.admin;
     this.fromUser = null;
-    this.listProjectStorage = [{user: null}];
+    this.listProjectStorage = [{
+                                container: null,
+                                setContainer: null,
+                                fnDrop: null,
+                                storageDatabase: null
+                            }]
+                                ;
     this.$onInit = function() {
         wiDialog.authenticationDialog(function(userInfo) {
             console.log(userInfo);
@@ -72,7 +78,7 @@ app.controller('mainCtrl', function($scope, wiApi, $timeout, $http, wiDialog) {
     this.getChildrenDataset = function(node) {
         return [];
     }
-    this.clickFn = function(event, node, selectIds, rootnode) {
+    this.clickTreeVirtual = function(event, node, selectIds, rootnode) {
         console.log(node);
         if (node.projects) return;
         postPromise('http://dev.i2g.cloud/project/list', { username: node.username })
@@ -86,17 +92,6 @@ app.controller('mainCtrl', function($scope, wiApi, $timeout, $http, wiDialog) {
     self.listProject = [];
     self.listUser = [];
     self.storage_databases = {}
-    this.onDrop = function(event, helper, data) {
-        $timeout(() => {
-            let project = data[0];
-            let storage_databases = project.storage_databases[0];
-            self.storageDatabaseWiDrop = {
-                company: storage_databases.company,
-                directory: storage_databases.input_directory,
-                name: storage_databases.name,
-            }
-        })
-    }
     this.copyOrCut = function(action) {
 
         if (!self.currentUser.selectedList) return;
@@ -151,20 +146,11 @@ app.controller('mainCtrl', function($scope, wiApi, $timeout, $http, wiDialog) {
         }
     }
     this.setContainerAdmin = function(admin) {
-        self.admin = admin;
-    }
-    this.setContainerUser = function(user) {
-        self.user = user;
+        self.adminProjectStorage = admin;
     }
     this.onClickFileExplorer = function(user) {
         console.log(user);
         self.currentUser = user;
-    }
-    this.getContainerAdmin = function() {
-        return self.admin;
-    }
-    this.getContainerUser = function(index = 0) {
-        return self.user;
     }
     function postPromise(url, data) {
         return new Promise(function(resolve, reject) {
@@ -184,9 +170,47 @@ app.controller('mainCtrl', function($scope, wiApi, $timeout, $http, wiDialog) {
         });
     }
     this.addProjectStorage = function() {
-        self.listProjectStorage.push({user: null});
+        self.listProjectStorage.push({
+            container: null,
+            dropFn: null,
+            storageDatabase: null
+        });
     }
     this.removeProjectStorage = function() {
-        self.listProjectStorage.push({user: null});
+        if(self.listProjectStorage.length === 1) return ;
+        self.listProjectStorage.splice(self.currentTab, 1);
+        self.currentTab = 0;
+    }
+    this.currentTab = 0;
+    this.setCurrentTab = function(index) {
+        self.currentTab = index;
+    }
+    this.getFnDrop = function(index) {
+        if(!self.listProjectStorage[index].fnDrop) {
+            self.listProjectStorage[index].fnDrop = function(event, helper, data) {
+                $timeout(() => {
+                    let project = data[0];
+                    let storage_databases = project.storage_databases[0];
+                    self.listProjectStorage[index].storageDatabase = {
+                        company: storage_databases.company,
+                        directory: storage_databases.input_directory,
+                        name: storage_databases.name,
+                    }
+                })
+            }
+        }
+        return self.listProjectStorage[index].fnDrop;
+    }
+    this.getStorageDatabase = function(index) {
+        return self.listProjectStorage[index].storageDatabase;
+    }
+    this.setContainerProjectStorage = function(index) {
+        if(!self.listProjectStorage[index].setContainer) {
+            self.listProjectStorage[index].setContainer = function(container) {
+                self.listProjectStorage[index].container = container;
+            }
+        }
+        return self.listProjectStorage[index].setContainer;
+        // self.listProjectStorage[index].container = 
     }
 });
