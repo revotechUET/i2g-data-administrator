@@ -13,36 +13,40 @@ app.controller('mainCtrl', function($scope, wiApi, $timeout, $http, wiDialog) {
                                 setContainer: null,
                                 fnDrop: null,
                                 storageDatabase: null
-                            }]
-                                ;
-    this.$onInit = function() {
+                            }];
+    if(!window.localStorage.getItem('rememberAuth')) {
         wiDialog.authenticationDialog(function(userInfo) {
-            console.log(userInfo);
-            postPromise('http://admin.dev.i2g.cloud/user/list', { token: window.localStorage.token })
-                .then(data => {
-                    console.log(data);
-                    let admin = data.find(i => {
-                        return userInfo.username === i.username;
-                    })
-                    if (admin) {
-                        postPromise('http://dev.i2g.cloud/project/list', { username: admin.username })
-                            .then(proj => {
-                                $timeout(() => {
-                                    let project = proj[0];
-                                    let storage_databases = project.storage_databases[0];
-                                    self.storageDatabaseAdmin = {
-                                        company: storage_databases.company,
-                                        directory: storage_databases.input_directory,
-                                        name: storage_databases.name,
-                                    }
-                                })
-                            })
-                    }
-                    $timeout(() => {
-                        self.listUser = data;
-                    })
-                })
+            onInit();
         })
+    }
+    else {
+        onInit();
+    }
+    function onInit() {
+        postPromise('http://admin.dev.i2g.cloud/user/list', { token: window.localStorage.token })
+                    .then(data => {
+                        console.log(data);
+                        let admin = data.find(i => {
+                            return window.localStorage.username === i.username;
+                        })
+                        if (admin) {
+                            postPromise('http://dev.i2g.cloud/project/list', { username: admin.username })
+                                .then(proj => {
+                                    $timeout(() => {
+                                        let project = proj[0];
+                                        let storage_databases = project.storage_databases[0];
+                                        self.storageDatabaseAdmin = {
+                                            company: storage_databases.company,
+                                            directory: storage_databases.input_directory,
+                                            name: storage_databases.name,
+                                        }
+                                    })
+                                })
+                        }
+                        $timeout(() => {
+                            self.listUser = data;
+                        })
+                    })
     }
     this.getLabel = function(node) {
         return (node || {}).username || (node || {}).name || 'no name';
