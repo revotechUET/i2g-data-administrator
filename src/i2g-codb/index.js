@@ -198,11 +198,15 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
         });
     }
     this.removeProjectStorage = function() {
-        if(self.listProjectStorage.length === 1) return ;
-        self.listProjectStorage.splice(self.currentTab, 1);
-        self.currentTab = 0;
+        // $timeout(() => {
+            self.currentTab = -1;
+            if(self.listProjectStorage.length === 1) return ;
+            self.listProjectStorage.splice(self.currentTab, 1);
+            // self.currentTab = 0;
+        // })
     }
-    this.currentTab = 0;
+    // this.currentTab = 0;
+    this.currentTab = -1;
     this.setCurrentTab = function(index) {
         self.currentTab = index;
     }

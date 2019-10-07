@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="workspace">
-            <div class="layout-left" resizable r-directions="['right']" r-flex="true">
+            <!-- <div class="layout-left" resizable r-directions="['right']" r-flex="true">
                 <span class="tab">
                     <div class="active">
                         <div>Admin tab</div>
@@ -51,9 +51,12 @@
                         </file-explorer>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="layout-right">
                 <span class="tab">
+                    <div ng-class="{'active': self.currentTab === -1}" ng-click="self.setCurrentTab(-1);">
+                        <div>Tab Admin</div>
+                    </div>
                     <div ng-repeat="tab in self.listProjectStorage track by $index"
                         ng-class="{'active': self.currentTab === $index}" ng-click="self.setCurrentTab($index);">
                         <div>Tab {{$index}}</div>
@@ -63,6 +66,10 @@
                 </span>
                 <div class="layout-workspace">
                     <div>
+                        <file-explorer ng-show="self.currentTab===-1" ng-click="self.onClickFileExplorer(self.adminProjectStorage);"
+                            url="http://file-backend.dev.i2g.cloud" storage-database="self.storageDatabaseAdmin"
+                            id-project="1" set-container="self.setContainerAdmin">
+                        </file-explorer>
                         <wi-droppable ng-repeat="projStorage in self.listProjectStorage track by $index"
                             ng-show="self.currentTab===$index" style="height: 100%;" on-drop="self.getFnDrop($index)"
                             container-style="{'width': '100%', 'height': '100%'}">
