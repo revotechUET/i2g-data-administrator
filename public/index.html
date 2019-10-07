@@ -10,6 +10,7 @@
     <script src="./bower_components/lodash/dist/lodash.min.js"></script>
     <script src="./bower_components/angular-ui-select/dist/select.js"></script>
     <script src="./bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="./bower_components/angular-resizable/angular-resizable.min.js"></script>
     <!-- <script src="./bower_components/angular-bootstrap/ui-bootstrap.min.js"></script> -->
     <script src="./bower_components/ng-file-upload/ng-file-upload.min.js"></script>
     <!-- <script src='./bower_components/ng-dialog/js/ngDialog.min.js'></script> -->
@@ -28,21 +29,17 @@
     <link rel="stylesheet" type="text/css" href="./bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="./bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="./bower_components/themify-icons/css/themify-icons.css">
-    <style type="text/css">
-        .hpanel {
-            width: 50%;
-            border: 1px solid black;
-        }
-        
-        .menu {
-            flex-basis: 40px;
-            background-color: yellow;
-        }
-    </style>
-</head>
+    <link rel="stylesheet" type="text/css" href="./bower_components/angular-resizable/angular-resizable.min.css">
 
+</head>
+<style>
+body {
+    font-size  : 12px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, "ãƒ’ãƒ©ã‚®ãƒŽè§’ã‚´ Pro W3", "Hiragino Kaku Gothic Pro", "ãƒ¡ã‚¤ãƒªã‚ª", Meiryo, "ï¼­ï¼³ ï¼°ã‚´ã‚·ãƒƒã‚¯", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+</style>
 <body>
-    <div ng-app="i2gDataApp" style="width: 100%;height: 100vh;position: relative;">
+    <div ng-app="i2gDataApp" style="width: 100vw;height: 100vh;position: relative;">
         <i2g-codb>
         </i2g-codb>
     </div>

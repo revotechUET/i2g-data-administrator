@@ -1,0 +1,38 @@
+<div style="display:flex; flex-direction: column;width: calc(100% - 15px);height: 100%;margin-left: 15px;">
+    <div class="menu" style="display: flex;">
+        <div style="margin: 8px;" ng-click="self.copyOrCut('copy')">
+            copy
+        </div>
+        <div style="margin: 8px;" ng-click="self.copyOrCut('cut')">
+            cut
+        </div>
+        <div style="margin: 8px;" ng-click="self.paste()">
+            paste
+        </div>
+        <div style="margin: 8px;" ng-click="self.addProjectStorage();">
+            add project storage
+        </div>
+        <div style="margin: 8px;" ng-click="self.removeProjectStorage();">
+            remove project storage
+        </div>
+        <div style="margin: 8px;" ng-repeat="tab in self.listProjectStorage track by $index" ng-class={} ng-click="self.setCurrentTab($index);">
+            tab {{$index}}
+        </div>
+    </div>
+    <div style="border:1px solid gray;overflow: hidden;display: flex;flex:1">
+        <div class="hpanel" style="width: 50%">
+            <file-explorer ng-click="self.onClickFileExplorer(self.adminProjectStorage);" url="http://file-backend.dev.i2g.cloud" storage-database="self.storageDatabaseAdmin" id-project="1" set-container="self.setContainerAdmin">
+            </file-explorer>
+        </div>
+        <div class="hpanel" style="width: 50%;">
+            <wi-droppable ng-repeat="projStorage in self.listProjectStorage track by $index" ng-show="self.currentTab===$index" style="height: 100%;" on-drop="self.getFnDrop($index)" container-style="{'width': '100%', 'height': '100%'}">
+                <file-explorer ng-click="self.onClickFileExplorer(self.listProjectStorage[$index].container);" url="http://file-backend.dev.i2g.cloud" storage-database="self.getStorageDatabase($index)" id-project="1" set-container="self.setContainerProjectStorage($index)">
+                </file-explorer>
+            </wi-droppable>
+        </div>
+    </div>
+</div>
+<side-bar my-default-width="300" collapsed="true" orientation="e" style="border-right: 1px solid #c5c5c5; position: absolute; left: 0; top: 0;height: 100%;">
+    <wi-tree-view-virtual tree-root="self.listUser" hide-unmatched='true' get-children="self.getChildren" click-fn='self.clickTreeVirtual' get-label="self.getLabel" get-icon='self.getIcon' run-match='self.runMatch' keep-chidren='true'>
+    </wi-tree-view-virtual>
+</side-bar>

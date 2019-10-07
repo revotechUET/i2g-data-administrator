@@ -3,7 +3,7 @@ const componentName = "i2gCodb";
 module.exports = {
     name: moduleName
 };
-var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual', 'angularModalService', 'wiDroppable', 'wiDialog']);
+var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual', 'angularModalService', 'wiDroppable', 'wiDialog','angularResizable']);
 app.component(componentName, {
     template: require('./template.html'),
     controller: i2gCodbController,
@@ -78,7 +78,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
             return "well-16x16";
         } else if (node.idProject) {
             return "project-normal-16x16";
-        } else return 'ti ti-user';
+        } else return 'fa fa-user-circle-o';
     }
     this.getChildren = function(node) {
         if (!node) return [];
