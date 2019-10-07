@@ -1,4 +1,4 @@
-<div class="slim-scroller">
+<div class="slim-scroller" id="app">
     <div class="side-left">
         <wi-tree-view-virtual tree-root="self.listUser" hide-unmatched='true' get-children="self.getChildren"
             click-fn='self.clickTreeVirtual' get-label="self.getLabel" get-icon='self.getIcon' run-match='self.runMatch'
@@ -26,13 +26,10 @@
                 </span>
             </div>
             <div>
-                <span class="ti ti-plus" ng-click="self.copyOrCut('copy')"></span>
-                <span class="ti ti-plus" ng-click="self.copyOrCut('copy')"></span>
-                <span class="ti ti-plus" ng-click="self.copyOrCut('copy')"></span>
-                <span class="ti ti-plus" ng-click="self.copyOrCut('copy')"></span>
+                <span ng-click="self.showTheme = !self.showTheme" class="ti ti-palette">
+                </span>
                 <span ng-click="self.copyOrCut('copy')" style="margin-right: 0;">
-                    <span class="ti ti-plus"></span>
-                    <div>LOGOUT</div>
+                    <div style="padding-left: 0">LOGOUT</div>
                 </span>
             </div>
         </div>
@@ -66,7 +63,8 @@
                 </span>
                 <div class="layout-workspace">
                     <div>
-                        <file-explorer ng-show="self.currentTab===-1" ng-click="self.onClickFileExplorer(self.adminProjectStorage);"
+                        <file-explorer ng-show="self.currentTab===-1"
+                            ng-click="self.onClickFileExplorer(self.adminProjectStorage);"
                             url="http://file-backend.dev.i2g.cloud" storage-database="self.storageDatabaseAdmin"
                             id-project="1" set-container="self.setContainerAdmin">
                         </file-explorer>
@@ -84,6 +82,27 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+
+</div>
+<div ng-if="self.showTheme"
+style="width: 100vw; height: 100vh; z-index: 1; top:0; background: #00000026; position: absolute;">
+    <div class="dialog-change-theme">
+        <div class="header-theme-dialog">
+            <span>Appearance</span>
+            <span class="ti ti-close" ng-click="self.showTheme = !self.showTheme"></span>
+        </div>
+        <div class="theme-opiton">
+            <div class="theme1" ng-click="self.changeTheme('light')">
+                <div class="choose"></div>
+                <span>Light</span>
+            </div>
+            <div class="theme2" ng-click="self.changeTheme('dark')">
+                <div class="choose"></div>
+                <span>Dark</span>
+            </div>
         </div>
     </div>
 </div>

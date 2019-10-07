@@ -121,6 +121,16 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
         self.pasteList.action = action;
 
     }
+    this.changeTheme = function(theme) {
+        var element = document.getElementById("app");
+        if(theme === 'light') {
+            element.classList.remove("dark-theme");
+        }
+        else if (theme === 'dark') {
+            element.classList.add("dark-theme");
+        }
+        
+    }
     this.paste = function() {
         // console.log('paste');
         if (self.pasteList) {
