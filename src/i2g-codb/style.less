@@ -175,26 +175,45 @@ i2g-codb {
                         background: #fff;
                     }
 
-                    &>div {
-                        white-space            : nowrap;
-                        cursor                 : pointer;
-                        margin-right           : 5px;
-                        background             : #ffffff69;
-                        width                  : 120px;
-                        display                : flex;
-                        padding                : 15px;
-                        font-size              : 12px;
-                        align-items            : center;
-                        height                 : 100%;
-                        justify-content        : space-between;
-                        transition             : all ease-in 0.2s;
-                        border-top-left-radius : 2px;
-                        border-top-right-radius: 2px;
+                    .tab-name {
+                        width        : 100px;
+                        padding      : 15px;
+                        overflow     : hidden;
+                        text-overflow: ellipsis;
 
                         &:hover {
                             background: #fff;
                             transition: all ease-in 0.2s;
                         }
+                    }
+
+                    .close-tab {
+                        width  : 40px;
+                        padding: 15px;
+
+                        &:hover {
+                            background: rgb(228, 228, 228);
+                            transition: all ease-in 0.2s;
+                        }
+                    }
+
+                    &>div {
+                        white-space               : nowrap;
+                        cursor                    : pointer;
+                        margin-right              : 5px;
+                        background                : #ffffff69;
+                        // width                  : 130px;
+                        display                   : flex;
+                        // padding                : 15px;
+                        font-size                 : 12px;
+                        align-items               : center;
+                        height                    : 100%;
+                        justify-content           : space-between;
+                        transition                : all ease-in 0.2s;
+                        border-top-left-radius    : 2px;
+                        border-top-right-radius   : 2px;
+
+
                     }
                 }
 
