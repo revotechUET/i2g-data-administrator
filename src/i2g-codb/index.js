@@ -64,6 +64,13 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
                             })
                         }
                     })
+        
+        if(!window.localStorage.getItem('currentTheme')){
+            window.localStorage.setItem('currentTheme','light');
+        }else if(window.localStorage.getItem('currentTheme')==='dark'){
+            var element = document.getElementById("app");
+                element.classList.add("dark-theme");
+        }
     }
     this.getLabel = function(node) {
         return (node || {}).username || (node || {}).name || 'no name';
@@ -78,7 +85,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
             return "well-16x16";
         } else if (node.idProject) {
             return "project-normal-16x16";
-        } else return 'fa fa-user-circle-o';
+        } else return 'ti ti-user';
     }
     this.getChildren = function(node) {
         if (!node) return [];
@@ -125,9 +132,12 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
         var element = document.getElementById("app");
         if(theme === 'light') {
             element.classList.remove("dark-theme");
+            window.localStorage.setItem('currentTheme','light');
         }
         else if (theme === 'dark') {
             element.classList.add("dark-theme");
+            window.localStorage.setItem('currentTheme','dark');
+
         }
         
     }

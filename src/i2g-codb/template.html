@@ -55,10 +55,9 @@
                         <div>Tab Admin</div>
                     </div>
                     <div ng-repeat="tab in self.listProjectStorage track by $index"
-                        ng-class="{'active': self.currentTab === $index}" ng-click="self.setCurrentTab($index);">
-                        <div>Tab {{$index}}</div>
-                        <div style="margin-left: 10px;" class="ti ti-close" ng-click="self.removeProjectStorage();">
-                        </div>
+                        ng-class="{'active': self.currentTab === $index}">
+                        <div ng-click="self.setCurrentTab($index);">Tab {{$index}}</div>
+                        <div style="margin-left: 10px;" class="ti ti-close" ng-click="self.removeProjectStorage();"></div>
                     </div>
                 </span>
                 <div class="layout-workspace">
@@ -92,7 +91,7 @@ style="width: 100vw; height: 100vh; z-index: 1; top:0; background: #00000026; po
     <div class="dialog-change-theme">
         <div class="header-theme-dialog">
             <span>Appearance</span>
-            <span class="ti ti-close" ng-click="self.showTheme = !self.showTheme"></span>
+            <span class="ti ti-close" ng-click="self.showTheme = !self.showTheme" style="cursor: pointer; font-size: 12px;"></span>
         </div>
         <div class="theme-opiton">
             <div class="theme1" ng-click="self.changeTheme('light')">
