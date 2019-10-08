@@ -52,11 +52,11 @@
             <div class="layout-right">
                 <span class="tab">
                     <div ng-class="{'active': self.currentTab === -1}" ng-click="self.setCurrentTab(-1);">
-                        <div>Tab Admin</div>
+                        <div>Admin</div>
                     </div>
                     <div ng-repeat="tab in self.listProjectStorage track by $index"
                         ng-class="{'active': self.currentTab === $index}">
-                        <div ng-click="self.setCurrentTab($index);">Tab {{$index}}</div>
+                        <div ng-click="self.setCurrentTab($index);">{{tab.label}}</div>
                         <div style="margin-left: 10px;" class="ti ti-close" ng-click="self.removeProjectStorage();"></div>
                     </div>
                 </span>

@@ -21,7 +21,8 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
                                 container: null,
                                 setContainer: null,
                                 fnDrop: null,
-                                storageDatabase: null
+                                storageDatabase: null,
+                                label: 'New Tab'
                             }];
     if(!window.localStorage.getItem('rememberAuth')) {
         wiDialog.authenticationDialog(function(userInfo) {
@@ -214,7 +215,8 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
         self.listProjectStorage.push({
             container: null,
             dropFn: null,
-            storageDatabase: null
+            storageDatabase: null,
+            label: 'New Tab'
         });
     }
     this.removeProjectStorage = function() {
@@ -233,9 +235,11 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
     this.getFnDrop = function(index) {
         if(!self.listProjectStorage[index].fnDrop) {
             self.listProjectStorage[index].fnDrop = function(event, helper, data) {
+                if(!data || !data.length) return;
                 $timeout(() => {
                     let project = data[0];
                     let storage_databases = project.storage_databases[0];
+                    self.listProjectStorage[index].label = project.name;
                     self.listProjectStorage[index].storageDatabase = {
                         company: storage_databases.company,
                         directory: storage_databases.input_directory,
