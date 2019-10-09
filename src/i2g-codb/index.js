@@ -266,4 +266,10 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
         return self.listProjectStorage[index].setContainer;
         // self.listProjectStorage[index].container = 
     }
+    this.logout = function() {
+        delete localStorage.token;
+        wiDialog.authenticationDialog(function(userInfo) {
+            onInit();
+        })
+    }
 }
