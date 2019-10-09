@@ -105,7 +105,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
         return [];
     }
     this.runMatch = function(node, filter) {
-        return node.username.includes(filter);
+        return ((node || {}).username || (node || {}).name).includes(filter);
     }
     this.getChildrenDataset = function(node) {
         return [];
