@@ -8,7 +8,10 @@ app.component(componentName, {
     template: require('./template.html'),
     controller: i2gCodbController,
     style: require('./style.less'),
-    controllerAs: 'self'
+    controllerAs: 'self',
+    bindings: {
+        maxTab: '<'
+    }
 });
 
 function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
@@ -212,6 +215,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
         });
     }
     this.addProjectStorage = function() {
+        if(self.maxTab && self.listProjectStorage.length >= self.maxTab) return;
         self.listProjectStorage.push({
             container: null,
             dropFn: null,
