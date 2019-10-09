@@ -20,13 +20,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
     this.user;
     this.currentUser = this.admin;
     this.fromUser = null;
-    this.listProjectStorage = [{
-                                container: null,
-                                setContainer: null,
-                                fnDrop: null,
-                                storageDatabase: null,
-                                label: 'New Tab'
-                            }];
+    this.listProjectStorage = [];
     if(!window.localStorage.getItem('rememberAuth')) {
         wiDialog.authenticationDialog(function(userInfo) {
             onInit();
@@ -75,6 +69,12 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
             var element = document.getElementById("app");
                 element.classList.add("dark-theme");
         }
+        // self.listProjectStorage.push({
+        //     container: null,
+        //     dropFn: null,
+        //     storageDatabase: null,
+        //     label: 'hung'
+        // });
     }
     this.getLabel = function(node) {
         return (node || {}).username || (node || {}).name || 'no name';
@@ -222,6 +222,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
             storageDatabase: null,
             label: 'New Tab'
         });
+        self.currentTab = self.listProjectStorage.length - 1;
     }
     this.removeProjectStorage = function(index) {
         // $timeout(() => {

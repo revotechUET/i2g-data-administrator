@@ -28,7 +28,7 @@
             <div>
                 <span ng-click="self.showTheme = !self.showTheme" class="ti ti-palette">
                 </span>
-                <span ng-click="self.logout()" style="margin-right: 0;">
+                <span ng-click="self.logoutDialog = !self.logoutDialog" style="margin-right: 0;">
                     <div style="padding-left: 0">LOGOUT</div>
                 </span>
             </div>
@@ -90,11 +90,12 @@
 
 </div>
 <div ng-if="self.showTheme"
-style="width: 100vw; height: 100vh; z-index: 1; top:0; background: #00000026; position: absolute;">
+    style="width: 100vw; height: 100vh; z-index: 1; top:0; background: #00000026; position: absolute; display: flex; align-items: center; justify-content: center;">
     <div class="dialog-change-theme">
         <div class="header-theme-dialog">
             <span>Appearance</span>
-            <span class="ti ti-close" ng-click="self.showTheme = !self.showTheme" style="cursor: pointer; font-size: 12px;"></span>
+            <span class="ti ti-close" ng-click="self.showTheme = !self.showTheme"
+                style="cursor: pointer; font-size: 12px;"></span>
         </div>
         <div class="theme-opiton">
             <div class="theme1" ng-click="self.changeTheme('light')">
@@ -105,6 +106,20 @@ style="width: 100vw; height: 100vh; z-index: 1; top:0; background: #00000026; po
                 <div class="choose"></div>
                 <span>Dark</span>
             </div>
+        </div>
+    </div>
+</div>
+<div ng-if="self.logoutDialog"
+    style="width: 100vw; height: 100vh; z-index: 1; top:0; background: #00000026; position: absolute; display: flex; align-items: center; justify-content: center;">
+    <div class="dialog-change-theme">
+        <div class="header-theme-dialog">
+            <span>Logout</span>
+            <span class="ti ti-close" ng-click="self.logoutDialog = !self.logoutDialog"
+                style="cursor: pointer; font-size: 12px;"></span>
+        </div>
+        <div class="footer-dialog">
+            <div class="btn-dialog" ng-click="self.logout()">Ok</div>
+            <div class="btn-dialog" ng-click="self.logoutDialog = !self.logoutDialog">Close</div>
         </div>
     </div>
 </div>
