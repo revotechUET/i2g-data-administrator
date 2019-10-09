@@ -59,6 +59,9 @@
                         <div class="tab-name" ng-click="self.setCurrentTab($index);">{{tab.label}}</div>
                         <div class="close-tab ti ti-close" ng-click="self.removeProjectStorage($index);"></div>
                     </div>
+                    <div ng-click="self.addProjectStorage()" style="position: sticky; right: 0; background: #f4f6f8;">
+                        <div class="close-tab ti ti-plus"></div>
+                    </div>
                 </span>
                 <div class="layout-workspace">
                     <div>
