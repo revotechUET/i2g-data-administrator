@@ -57,7 +57,7 @@
                     <div ng-repeat="tab in self.listProjectStorage track by $index"
                         ng-class="{'active': self.currentTab === $index}">
                         <div class="tab-name" ng-click="self.setCurrentTab($index);">{{tab.label}}</div>
-                        <div class="close-tab ti ti-close" ng-click="self.removeProjectStorage();"></div>
+                        <div class="close-tab ti ti-close" ng-click="self.removeProjectStorage($index);"></div>
                     </div>
                 </span>
                 <div class="layout-workspace">

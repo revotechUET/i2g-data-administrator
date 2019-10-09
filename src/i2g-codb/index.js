@@ -219,11 +219,11 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
             label: 'New Tab'
         });
     }
-    this.removeProjectStorage = function() {
+    this.removeProjectStorage = function(index) {
         // $timeout(() => {
-            self.currentTab = -1;
             if(self.listProjectStorage.length === 1) return ;
-            self.listProjectStorage.splice(self.currentTab, 1);
+            self.listProjectStorage.splice(index, 1);
+            self.currentTab = -1;
             // self.currentTab = 0;
         // })
     }
