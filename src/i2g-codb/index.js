@@ -3,7 +3,7 @@ const componentName = "i2gCodb";
 module.exports = {
     name: moduleName
 };
-var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual', 'angularModalService', 'wiDroppable', 'wiDialog','angularResizable']);
+var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual', 'angularModalService', 'wiDroppable', 'wiDialog', 'angularResizable']);
 app.component(componentName, {
     template: require('./template.html'),
     controller: i2gCodbController,
@@ -14,60 +14,91 @@ app.component(componentName, {
     }
 });
 
-function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
+function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) {
     let self = this;
     this.admin;
     this.user;
     this.currentUser = this.admin;
     this.fromUser = null;
     this.listProjectStorage = [];
-    if(!window.localStorage.getItem('rememberAuth')) {
-        wiDialog.authenticationDialog(function(userInfo) {
+    self.currentFontSize = '12px';
+    self.selectedFontSize = 12;
+    self.autoChangeTheme = true;
+    self.autoChangeThemeCheck = true;
+    if (!window.localStorage.getItem('rememberAuth')) {
+        wiDialog.authenticationDialog(function (userInfo) {
             onInit();
         })
     }
     else {
         onInit();
+        TimeCtrl();
     }
+    function TimeCtrl() {
+        var tick = function () {
+            self.clock = new Date();
+            hours = new Date();
+            if (self.autoChangeTheme) {
+                if ((hours.getHours() > 5) && (hours.getHours() < 19)) {
+                    $timeout(()=>{
+                        self.changeStyle('light');
+                        self.activeTheme = 'light';
+                    })
+                } else {
+                    $timeout(()=>{
+                        self.changeStyle('dark');
+                        self.activeTheme = 'dark';
+                    })
+                }
+            }
+        }
+        tick();
+        $interval(tick, 1000);
+    }
+
+
     function onInit() {
         postPromise('http://admin.dev.i2g.cloud/user/list', { token: window.localStorage.token })
-                    .then(data => {
-                        console.log(data);
-                        let admin = data.find(i => {
-                            return window.localStorage.username === i.username;
-                        })
-                        if (admin) {
-                            postPromise('http://dev.i2g.cloud/project/list', { username: admin.username })
-                                .then(proj => {
-                                    $timeout(() => {
-                                        let project = proj[0];
-                                        let storage_databases = project.storage_databases[0];
-                                        self.storageDatabaseAdmin = {
-                                            company: storage_databases.company,
-                                            directory: storage_databases.input_directory,
-                                            name: storage_databases.name,
-                                        }
-                                    })
-                                })
-                        }
-                        $timeout(() => {
-                            self.listUser = data;
-                        })
-                    })
-                    .catch((err) => {
-                        if(err.status === 401) {
-                            delete window.localStorage.rememberAuth;
-                            wiDialog.authenticationDialog(function(userInfo) {
-                                onInit();
+            .then(data => {
+                console.log(data);
+                let admin = data.find(i => {
+                    return window.localStorage.username === i.username;
+                })
+                if (admin) {
+                    postPromise('http://dev.i2g.cloud/project/list', { username: admin.username })
+                        .then(proj => {
+                            $timeout(() => {
+                                let project = proj[0];
+                                let storage_databases = project.storage_databases[0];
+                                self.storageDatabaseAdmin = {
+                                    company: storage_databases.company,
+                                    directory: storage_databases.input_directory,
+                                    name: storage_databases.name,
+                                }
                             })
-                        }
+                        })
+                }
+                $timeout(() => {
+                    self.listUser = data;
+                })
+            })
+            .catch((err) => {
+                if (err.status === 401) {
+                    delete window.localStorage.rememberAuth;
+                    wiDialog.authenticationDialog(function (userInfo) {
+                        onInit();
                     })
-        
-        if(!window.localStorage.getItem('currentTheme')){
-            window.localStorage.setItem('currentTheme','light');
-        }else if(window.localStorage.getItem('currentTheme')==='dark'){
+                }
+            })
+
+        if (!window.localStorage.getItem('currentTheme')) {
+            window.localStorage.setItem('currentTheme', 'light');
+        } else if (window.localStorage.getItem('currentTheme') === 'dark') {
             var element = document.getElementById("app");
-                element.classList.add("dark-theme");
+            element.classList.add("dark-theme");
+            self.activeTheme = 'dark';
+        } else if (window.localStorage.getItem('currentTheme') === 'light') {
+            self.activeTheme = 'light';
         }
         // self.listProjectStorage.push({
         //     container: null,
@@ -76,10 +107,10 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
         //     label: 'hung'
         // });
     }
-    this.getLabel = function(node) {
+    this.getLabel = function (node) {
         return (node || {}).username || (node || {}).name || 'no name';
     }
-    this.getIcon = function(node) {
+    this.getIcon = function (node) {
         if (!node) return;
         if (node.idCurve) {
             return "curve-16x16";
@@ -91,7 +122,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
             return "project-normal-16x16";
         } else return 'ti ti-user';
     }
-    this.getChildren = function(node) {
+    this.getChildren = function (node) {
         if (!node) return [];
         if (node.idDataset) {
             return node.curves || [];
@@ -104,13 +135,13 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
         }
         return [];
     }
-    this.runMatch = function(node, filter) {
+    this.runMatch = function (node, filter) {
         return ((node || {}).username || (node || {}).name).includes(filter);
     }
-    this.getChildrenDataset = function(node) {
+    this.getChildrenDataset = function (node) {
         return [];
     }
-    this.clickTreeVirtual = function(event, node, selectIds, rootnode) {
+    this.clickTreeVirtual = function (event, node, selectIds, rootnode) {
         console.log(node);
         if (node.projects) return;
         postPromise('http://dev.i2g.cloud/project/list', { username: node.username })
@@ -124,28 +155,35 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
     self.listProject = [];
     self.listUser = [];
     self.storage_databases = {}
-    this.copyOrCut = function(action) {
+    this.copyOrCut = function (action) {
 
         if (!self.currentUser.selectedList) return;
         self.fromUser = self.currentUser;
         self.pasteList = self.currentUser.selectedList;
         self.pasteList.action = action;
+        console.log(self.pasteList)
 
     }
-    this.changeTheme = function(theme) {
+    this.changeFontSize = function (size) {
+        $("body").find("*").filter(function () {
+            return ($(this).css("font-size") == self.currentFontSize);
+        }).css("font-size", size);
+        self.currentFontSize = size;
+    }
+    this.changeStyle = function (theme) {
         var element = document.getElementById("app");
-        if(theme === 'light') {
+        if (theme === 'light') {
             element.classList.remove("dark-theme");
-            window.localStorage.setItem('currentTheme','light');
+            window.localStorage.setItem('currentTheme', 'light');
         }
         else if (theme === 'dark') {
             element.classList.add("dark-theme");
-            window.localStorage.setItem('currentTheme','dark');
-
+            window.localStorage.setItem('currentTheme', 'dark');
         }
-        
+
+
     }
-    this.paste = function() {
+    this.paste = function () {
         // console.log('paste');
         if (self.pasteList) {
             switch (self.pasteList.action) {
@@ -164,8 +202,8 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
                         } else {
                             console.log('===done');
                         }
-                        self.currentUser.goTo(self.currentUser.currentPath.length - 1);    
-                        self.fromUser.goTo(self.fromUser.currentPath.length - 1);    
+                        self.currentUser.goTo(self.currentUser.currentPath.length - 1);
+                        self.fromUser.goTo(self.fromUser.currentPath.length - 1);
                     });
                     break;
                 case 'cut':
@@ -183,22 +221,22 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
                         } else {
                             console.log('===done');
                         }
-                        self.currentUser.goTo(self.currentUser.currentPath.length - 1);    
-                        self.fromUser.goTo(self.fromUser.currentPath.length - 1);    
+                        self.currentUser.goTo(self.currentUser.currentPath.length - 1);
+                        self.fromUser.goTo(self.fromUser.currentPath.length - 1);
                     });
                     break;
             }
         }
     }
-    this.setContainerAdmin = function(admin) {
+    this.setContainerAdmin = function (admin) {
         self.adminProjectStorage = admin;
     }
-    this.onClickFileExplorer = function(user) {
+    this.onClickFileExplorer = function (user) {
         console.log(user);
         self.currentUser = user;
     }
     function postPromise(url, data) {
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
             $http({
                 method: 'POST',
                 url: url,
@@ -214,8 +252,8 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
             })
         });
     }
-    this.addProjectStorage = function() {
-        if(self.maxTab && self.listProjectStorage.length >= self.maxTab) return;
+    this.addProjectStorage = function () {
+        if (self.maxTab && self.listProjectStorage.length >= self.maxTab) return;
         self.listProjectStorage.push({
             container: null,
             dropFn: null,
@@ -224,23 +262,23 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
         });
         self.currentTab = self.listProjectStorage.length - 1;
     }
-    this.removeProjectStorage = function(index) {
+    this.removeProjectStorage = function (index) {
         // $timeout(() => {
-            if(self.listProjectStorage.length === 1) return ;
-            self.listProjectStorage.splice(index, 1);
-            self.currentTab = -1;
-            // self.currentTab = 0;
+        if (self.listProjectStorage.length === 1) return;
+        self.listProjectStorage.splice(index, 1);
+        self.currentTab = -1;
+        // self.currentTab = 0;
         // })
     }
     // this.currentTab = 0;
     this.currentTab = -1;
-    this.setCurrentTab = function(index) {
+    this.setCurrentTab = function (index) {
         self.currentTab = index;
     }
-    this.getFnDrop = function(index) {
-        if(!self.listProjectStorage[index].fnDrop) {
-            self.listProjectStorage[index].fnDrop = function(event, helper, data) {
-                if(!data || !data.length) return;
+    this.getFnDrop = function (index) {
+        if (!self.listProjectStorage[index].fnDrop) {
+            self.listProjectStorage[index].fnDrop = function (event, helper, data) {
+                if (!data || !data.length) return;
                 $timeout(() => {
                     let project = data[0];
                     let storage_databases = project.storage_databases[0];
@@ -255,21 +293,21 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog) {
         }
         return self.listProjectStorage[index].fnDrop;
     }
-    this.getStorageDatabase = function(index) {
+    this.getStorageDatabase = function (index) {
         return self.listProjectStorage[index].storageDatabase;
     }
-    this.setContainerProjectStorage = function(index) {
-        if(!self.listProjectStorage[index].setContainer) {
-            self.listProjectStorage[index].setContainer = function(container) {
+    this.setContainerProjectStorage = function (index) {
+        if (!self.listProjectStorage[index].setContainer) {
+            self.listProjectStorage[index].setContainer = function (container) {
                 self.listProjectStorage[index].container = container;
             }
         }
         return self.listProjectStorage[index].setContainer;
         // self.listProjectStorage[index].container = 
     }
-    this.logout = function() {
+    this.logout = function () {
         delete localStorage.token;
-        wiDialog.authenticationDialog(function(userInfo) {
+        wiDialog.authenticationDialog(function (userInfo) {
             onInit();
         })
     }

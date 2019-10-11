@@ -9,58 +9,48 @@
         <div class="menu">
             <div>
                 <span ng-click="self.copyOrCut('copy')">
-                    <span class="copy-16x16"></span>
+                    <span class="ti ti-files"></span>
                     <div>Copy</div>
+
                 </span>
                 <span ng-click="self.copyOrCut('cut')">
-                    <span class="zone-split-16x16"></span>
+                    <span class="ti ti-cut"></span>
                     <div>Cut</div>
                 </span>
                 <span ng-click="self.paste()">
-                    <span class="copy-16x16"></span>
+                    <span class="ti ti-clipboard"></span>
                     <div>Paste</div>
+                    <p ng-if="self.pasteList.length">
+                        {{self.pasteList.length}}
+                    </p>
                 </span>
                 <!-- <span ng-click="self.addProjectStorage();">
                     <span class="zone-split-16x16"></span>
                     <div>Add tab</div>
                 </span> -->
             </div>
+            <p>{{ self.clock | date:'HH:mm:ss'}}</p>
             <div>
-                <span ng-click="self.showTheme = !self.showTheme" class="ti ti-palette">
-                </span>
-                <span ng-click="self.logoutDialog = !self.logoutDialog" style="margin-right: 0;">
-                    <div style="padding-left: 0">LOGOUT</div>
+                <span ng-click="self.showSetting = !self.showSetting"
+                    style="margin-right: 0; background: #4a7def; color: #fff;">
+                    <span class="ti ti-settings"></span>
+                    <div style="padding-left: 0">Setting</div>
                 </span>
             </div>
         </div>
         <div class="workspace">
-            <!-- <div class="layout-left" resizable r-directions="['right']" r-flex="true">
-                <span class="tab">
-                    <div class="active">
-                        <div>Admin tab</div>
-                    </div>
-                </span>
-                <div class="layout-workspace">
-                    <div class="layout-2">
-                        <file-explorer ng-click="self.onClickFileExplorer(self.adminProjectStorage);"
-                            url="http://file-backend.dev.i2g.cloud" storage-database="self.storageDatabaseAdmin"
-                            id-project="1" set-container="self.setContainerAdmin">
-                        </file-explorer>
-                    </div>
-                </div>
-            </div> -->
             <div class="layout-right">
                 <span class="tab">
                     <div ng-class="{'active': self.currentTab === -1}" ng-click="self.setCurrentTab(-1);">
                         <div class="tab-name">Admin</div>
                     </div>
-                    <div ng-repeat="tab in self.listProjectStorage track by $index"
+                    <div class="tab-tab" ng-repeat="tab in self.listProjectStorage track by $index"
                         ng-class="{'active': self.currentTab === $index}">
                         <div class="tab-name" ng-click="self.setCurrentTab($index);">{{tab.label}}</div>
                         <div class="close-tab ti ti-close" ng-click="self.removeProjectStorage($index);"></div>
                     </div>
                     <div ng-click="self.addProjectStorage()" style="position: sticky; right: 0; background: #f4f6f8;">
-                        <div class="close-tab ti ti-plus"></div>
+                        <div class="close-tab ti ti-plus" style="margin-left: 10px;"></div>
                     </div>
                 </span>
                 <div class="layout-workspace">
@@ -83,18 +73,68 @@
                     </div>
                 </div>
             </div>
+            <div class="setting" ng-class="{'show-setting':self.showSetting}">
+                <div class="header">
+                    <span class="title">
+                        <span class="ti ti-wand" style="margin-right: 15px;"></span>
+                        Appearance
+                    </span>
+                    <span class="sub">Choose your theme or set automatic</span>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin: 20px 0;">
+                        <div>Automatic with sunset</div>
+                        <label class="switch">
+                            <input type="checkbox" ng-checked="self.autoChangeThemeCheck">
+                            <span class="slider round" ng-click="self.autoChangeTheme = !self.autoChangeTheme"></span>
+                        </label>
+                    </div>
+                    <div style="display: flex; margin-bottom: 20px;justify-content: space-between;" ng-show="!self.autoChangeTheme">
+                        <div ng-class="{'active': self.activeTheme === 'light'}"
+                            ng-click="self.changeStyle('light'); self.activeTheme = 'light'" class="theme theme1">
+                        </div>
+                        <div ng-class="{'active': self.activeTheme === 'dark'}"
+                            ng-click="self.changeStyle('dark'); self.activeTheme = 'dark'" class="theme theme2"
+                            style="margin: 0;">
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="header" style="margin-top: 20px;">
+                    <span class="title">
+                        <span class="ti ti-shortcode" style="margin-right: 15px;"></span>
+                        Font size
+                    </span>
+                    <span class="sub">Select font size for this website</span>
+                    <div class="font-size">
+                        <div ng-click="self.selectedFontSize = 10; self.changeFontSize('10px')"
+                            ng-class="{'choose-font-size':self.selectedFontSize === 10}"></div>
+                        <div ng-click="self.selectedFontSize = 12; self.changeFontSize('12px')"
+                            ng-class="{'choose-font-size':self.selectedFontSize === 12}"></div>
+                        <div ng-click="self.selectedFontSize = 14; self.changeFontSize('14px')"
+                            ng-class="{'choose-font-size':self.selectedFontSize === 14}"></div>
+                        <div ng-click="self.selectedFontSize = 16; self.changeFontSize('16px')"
+                            ng-class="{'choose-font-size':self.selectedFontSize === 16}"></div>
+                    </div>
+                    <div class="font-size" style="background: none; margin-bottom: 20px;">
+                        <span>10</span>
+                        <span>12</span>
+                        <span>14</span>
+                        <span>16</span>
+                    </div>
+                </div>
 
+                <div class="logout">
+
+                </div>
+            </div>
         </div>
     </div>
-
-
 </div>
-<div ng-if="self.showTheme"
-    style="width: 100vw; height: 100vh; z-index: 1; top:0; background: #00000026; position: absolute; display: flex; align-items: center; justify-content: center;">
+<!-- <div ng-if="self.showSetting"
+    style=" width: 100vw; height: 100vh; z-index: 1; top:0; background: #00000026; position: absolute; display: flex; align-items: center; justify-content: center;">
     <div class="dialog-change-theme">
         <div class="header-theme-dialog">
             <span>Appearance</span>
-            <span class="ti ti-close" ng-click="self.showTheme = !self.showTheme"
+            <span class="ti ti-close" ng-click="self.showSetting = !self.showSetting"
                 style="cursor: pointer; font-size: 12px;"></span>
         </div>
         <div class="theme-opiton">
@@ -108,18 +148,4 @@
             </div>
         </div>
     </div>
-</div>
-<div ng-if="self.logoutDialog"
-    style="width: 100vw; height: 100vh; z-index: 1; top:0; background: #00000026; position: absolute; display: flex; align-items: center; justify-content: center;">
-    <div class="dialog-change-theme">
-        <div class="header-theme-dialog">
-            <span>Logout</span>
-            <span class="ti ti-close" ng-click="self.logoutDialog = !self.logoutDialog"
-                style="cursor: pointer; font-size: 12px;"></span>
-        </div>
-        <div class="footer-dialog">
-            <div class="btn-dialog" ng-click="self.logout()">Ok</div>
-            <div class="btn-dialog" ng-click="self.logoutDialog = !self.logoutDialog">Close</div>
-        </div>
-    </div>
-</div>
+</div> -->
