@@ -298,11 +298,32 @@ i2g-codb {
         }
     }
 
+    .logout {
+        position       : absolute;
+        padding        : 9px 0;
+        bottom         : 0;
+        margin-bottom  : 20px;
+        background     : #2d7eff;
+        color          : #fff;
+        align-items    : center;
+        justify-content: center;
+        display        : flex;
+        border-radius  : 2px;
+        transition     : all ease-in 0.3s;
+        width          : calc(100% - 40px);
+        cursor         : pointer;
+
+        &:hover {
+            transition: all ease-in 0.3s;
+            background: #3058c7;
+        }
+    }
+
     .header {
-        display       : flex;
-        flex-direction: column;
+        display          : flex;
+        flex-direction   : column;
         // padding-bottom: 20px;
-        border-bottom : 1px solid #ecf0f3;
+        border-bottom    : 1px solid #ecf0f3;
     }
 
     .title {
@@ -481,6 +502,7 @@ i2g-codb {
 
     file-explorer .outside .main-content .selected {
         user-select: none;
+        background: #f9fafb;
     }
 
     file-explorer .outside .main-content .sidebar-properties {
@@ -527,9 +549,10 @@ i2g-codb {
         background-color: #4B7DEF;
         color           : #fff;
         border-bottom   : 1px solid #f0f0f0;
+
         &::placeholder {
-            color: rgba(255, 255, 255, 0.404);
-            font-weight: normal;
+            color         : rgba(255, 255, 255, 0.404);
+            font-weight   : normal;
             letter-spacing: 1px;
 
         }
@@ -555,6 +578,7 @@ i2g-codb {
     wi-tree-node-virtual .node-caret {
         width: 18px;
     }
+
     wi-tree-node-virtual .node-label {
         font-size: unset;
     }

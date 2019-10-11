@@ -81,7 +81,7 @@
                     </span>
                     <span class="sub">Choose your theme or set automatic</span>
                     <div style="display: flex; align-items: center; justify-content: space-between; margin: 20px 0;">
-                        <div>Automatic with sunset</div>
+                        <div>Auto change theme with sun time</div>
                         <label class="switch">
                             <input type="checkbox" ng-checked="self.autoChangeThemeCheck">
                             <span class="slider round" ng-click="self.autoChangeTheme = !self.autoChangeTheme"></span>
@@ -122,8 +122,8 @@
                     </div>
                 </div>
 
-                <div class="logout">
-
+                <div class="logout" ng-click="self.logout()">
+                    <div >Logout</div>
                 </div>
             </div>
         </div>
