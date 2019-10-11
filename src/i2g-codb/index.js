@@ -183,9 +183,11 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
 
 
     }
+    this.pasting = false;
     this.paste = function () {
         // console.log('paste');
         if (self.pasteList) {
+            self.pasting = true;
             switch (self.pasteList.action) {
                 case 'copy':
                     async.eachSeries(self.pasteList, (file, next) => {
@@ -199,11 +201,13 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
                     }, err => {
                         if (err) {
                             console.log(err);
+                            self.pasting = false;
                         } else {
                             console.log('===done');
                         }
                         self.currentUser.goTo(self.currentUser.currentPath.length - 1);
                         self.fromUser.goTo(self.fromUser.currentPath.length - 1);
+                        self.pasting = false;
                     });
                     break;
                 case 'cut':
@@ -218,11 +222,13 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
                     }, err => {
                         if (err) {
                             console.log(err);
+                            self.pasting = false;
                         } else {
                             console.log('===done');
                         }
                         self.currentUser.goTo(self.currentUser.currentPath.length - 1);
                         self.fromUser.goTo(self.fromUser.currentPath.length - 1);
+                        self.pasting = false;
                     });
                     break;
             }
