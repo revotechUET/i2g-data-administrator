@@ -24,12 +24,14 @@
                         {{self.pasteList.length}}
                     </p>
                 </span>
+                <span ng-show="self.pasting">
+                    Đang paste
+                </span>
                 <!-- <span ng-click="self.addProjectStorage();">
                     <span class="zone-split-16x16"></span>
                     <div>Add tab</div>
                 </span> -->
             </div>
-            <p>{{ self.clock | date:'HH:mm:ss'}}</p>
             <div>
                 <span ng-click="self.showSetting = !self.showSetting"
                     style="margin-right: 0; background: #4a7def; color: #fff;">
@@ -46,7 +48,7 @@
                     </div>
                     <div class="tab-tab" ng-repeat="tab in self.listProjectStorage track by $index"
                         ng-class="{'active': self.currentTab === $index}">
-                        <div class="tab-name" ng-click="self.setCurrentTab($index);">{{tab.label}}</div>
+                        <div class="tab-name" ng-click="self.setCurrentTab($index);self.onClickFileExplorer(self.listProjectStorage[$index].container);">{{tab.label}}</div>
                         <div class="close-tab ti ti-close" ng-click="self.removeProjectStorage($index);"></div>
                     </div>
                     <div ng-click="self.addProjectStorage()" style="position: sticky; right: 0; background: #f4f6f8;">

@@ -183,46 +183,62 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
 
 
     }
+    this.pasting = false;
     this.paste = function () {
         // console.log('paste');
-        if (self.pasteList) {
+        if (self.pasteList && self.currentUser) {
+            self.pasting = true;
             switch (self.pasteList.action) {
                 case 'copy':
                     async.eachSeries(self.pasteList, (file, next) => {
-                        let from = `from=${encodeURIComponent(file.path)}&`;
-                        let dest = `dest=${encodeURIComponent('/' + self.currentUser.storageDatabase.company + '/' + self.currentUser.storageDatabase.directory + '/' + self.currentUser.currentPath.map(c => c.rootName).join('/'))}`;
+                        try {
+                            let from = `from=${encodeURIComponent(file.path)}&`;
+                            let dest = `dest=${encodeURIComponent('/' + self.currentUser.storageDatabase.company + '/' + self.currentUser.storageDatabase.directory + '/' + self.currentUser.currentPath.map(c => c.rootName).join('/'))}`;
 
-                        self.fromUser.httpGet(`${self.currentUser.copyUrl + from + dest}&skipCheckingUrl=${encodeURIComponent(true)}`, res => {
-                            console.log(res);
-                            next();
-                        })
+                            self.fromUser.httpGet(`${self.currentUser.copyUrl + from + dest}&skipCheckingUrl=${encodeURIComponent(true)}`, res => {
+                                console.log(res);
+                                next();
+                            })
+                        }catch (e){
+                            console.log(e);
+                            self.pasting = false;
+                        }
                     }, err => {
                         if (err) {
                             console.log(err);
+                            self.pasting = false;
                         } else {
                             console.log('===done');
                         }
                         self.currentUser.goTo(self.currentUser.currentPath.length - 1);
                         self.fromUser.goTo(self.fromUser.currentPath.length - 1);
+                        self.pasting = false;
                     });
                     break;
                 case 'cut':
                     async.eachSeries(self.pasteList, (file, next) => {
-                        let from = `from=${encodeURIComponent(file.path)}&`;
-                        let dest = `dest=${encodeURIComponent('/' + self.currentUser.storageDatabase.company + '/' + self.currentUser.storageDatabase.directory + '/' + self.currentUser.currentPath.map(c => c.rootName).join('/'))}`;
+                        try{
+                            let from = `from=${encodeURIComponent(file.path)}&`;
+                            let dest = `dest=${encodeURIComponent('/' + self.currentUser.storageDatabase.company + '/' + self.currentUser.storageDatabase.directory + '/' + self.currentUser.currentPath.map(c => c.rootName).join('/'))}`;
 
-                        self.fromUser.httpGet(`${self.currentUser.moveUrl + from + dest}&skipCheckingUrl=${encodeURIComponent(true)}`, res => {
-                            console.log(res);
-                            next();
-                        })
+                            self.fromUser.httpGet(`${self.currentUser.moveUrl + from + dest}&skipCheckingUrl=${encodeURIComponent(true)}`, res => {
+                                console.log(res);
+                                next();
+                            })
+                        }catch (e) {
+                            console.log(e);
+                            self.pasting = false;
+                        }
                     }, err => {
                         if (err) {
                             console.log(err);
+                            self.pasting = false;
                         } else {
                             console.log('===done');
                         }
                         self.currentUser.goTo(self.currentUser.currentPath.length - 1);
                         self.fromUser.goTo(self.fromUser.currentPath.length - 1);
+                        self.pasting = false;
                     });
                     break;
             }
