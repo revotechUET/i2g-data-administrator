@@ -59,7 +59,7 @@
                     <div>
                         <file-explorer ng-show="self.currentTab===-1"
                             ng-click="self.onClickFileExplorer(self.adminProjectStorage);"
-                            url="http://file-backend.dev.i2g.cloud" storage-database="self.storageDatabaseAdmin"
+                            url="{{self.fileManager}}" storage-database="self.storageDatabaseAdmin"
                             id-project="1" set-container="self.setContainerAdmin">
                         </file-explorer>
                         <wi-droppable ng-repeat="projStorage in self.listProjectStorage track by $index"
@@ -67,7 +67,7 @@
                             container-style="{'width': '100%', 'height': '100%'}">
                             <file-explorer
                                 ng-click="self.onClickFileExplorer(self.listProjectStorage[$index].container);"
-                                url="http://file-backend.dev.i2g.cloud"
+                                url="{{self.fileManager}}"
                                 storage-database="self.getStorageDatabase($index)" id-project="1"
                                 set-container="self.setContainerProjectStorage($index)">
                             </file-explorer>

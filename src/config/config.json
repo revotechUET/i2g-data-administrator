@@ -1,0 +1,12 @@
+{
+    "development":  {
+        "fileManager" : "http://file-backend.dev.i2g.cloud",
+        "authentication": "http://admin.dev.i2g.cloud",
+        "baseUrl": "http://dev.i2g.cloud"
+    },
+    "production":  {
+        "fileManager" : "https://file-backend.i2g.cloud",
+        "authentication": "https://users.i2g.cloud",
+        "baseUrl": "https://api-1.i2g.cloud"
+    }
+}

@@ -3,6 +3,13 @@ const componentName = "i2gCodb";
 module.exports = {
     name: moduleName
 };
+var config = require('../config/config').development;
+if (process.env.NODE_ENV === 'development') {
+    config = require('../config/config').development
+} else if (process.env.NODE_ENV === 'production') {
+    config = require('../config/config').production
+}
+window.localStorage.setItem('AUTHENTICATION_SERVICE', config.authentication);
 var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual', 'angularModalService', 'wiDroppable', 'wiDialog', 'angularResizable']);
 app.component(componentName, {
     template: require('./template.html'),
@@ -13,9 +20,10 @@ app.component(componentName, {
         maxTab: '<'
     }
 });
-
+i2gCodbController.$inject = ['$scope', 'wiApi', '$timeout', '$http', 'wiDialog', '$interval'];
 function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) {
     let self = this;
+    this.fileManager = config.fileManager;
     this.admin;
     this.user;
     this.currentUser = this.admin;
@@ -58,14 +66,14 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
 
 
     function onInit() {
-        postPromise('http://admin.dev.i2g.cloud/user/list', { token: window.localStorage.token })
+        postPromise(`${config.authentication}/user/list`, { token: window.localStorage.token })
             .then(data => {
                 console.log(data);
                 let admin = data.find(i => {
                     return window.localStorage.username === i.username;
                 })
                 if (admin) {
-                    postPromise('http://dev.i2g.cloud/project/list', { username: admin.username })
+                    postPromise(`${config.baseUrl}/project/list`, { username: admin.username })
                         .then(proj => {
                             $timeout(() => {
                                 let project = proj[0];
@@ -144,7 +152,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
     this.clickTreeVirtual = function (event, node, selectIds, rootnode) {
         console.log(node);
         if (node.projects) return;
-        postPromise('http://dev.i2g.cloud/project/list', { username: node.username })
+        postPromise(`${config.baseUrl}/project/list`, { username: node.username })
             .then(data => {
                 console.log('list project', data);
                 $timeout(() => {
