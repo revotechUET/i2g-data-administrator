@@ -167,9 +167,13 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
 
         if (!self.currentUser.selectedList) return;
         self.fromUser = self.currentUser;
-        self.pasteList = self.currentUser.selectedList;
+        console.log("=== copy ", self.fromUser.storageDatabase.directory);
+        self.pasteList = self.currentUser.selectedList.map((l => {
+            l.path = self.fromUser.storageDatabase.company + "/" + self.fromUser.storageDatabase.directory + l.path;
+            return l;
+        }));
         self.pasteList.action = action;
-        console.log(self.pasteList)
+        // console.log(self.pasteList)
 
     }
     this.changeFontSize = function (size) {
@@ -193,7 +197,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
     }
     this.pasting = false;
     this.paste = function () {
-        // console.log('paste');
+        // console.log('paste ', self.currentUser.storageDatabase.directory);
         if (self.pasteList && self.currentUser) {
             self.pasting = true;
             switch (self.pasteList.action) {
@@ -201,7 +205,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
                     async.eachSeries(self.pasteList, (file, next) => {
                         try {
                             let from = `from=${encodeURIComponent(file.path)}&`;
-                            let dest = `dest=${encodeURIComponent('/' + self.currentUser.storageDatabase.company + '/' + self.currentUser.storageDatabase.directory + '/' + self.currentUser.currentPath.map(c => c.rootName).join('/'))}`;
+                            let dest = `dest=${encodeURIComponent(self.currentUser.storageDatabase.company + '/' + self.currentUser.storageDatabase.directory + '/' + self.currentUser.currentPath.map(c => c.rootName).join('/'))}`;
 
                             self.fromUser.httpGet(`${self.currentUser.copyUrl + from + dest}&skipCheckingUrl=${encodeURIComponent(true)}`, res => {
                                 console.log(res);
@@ -227,7 +231,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
                     async.eachSeries(self.pasteList, (file, next) => {
                         try{
                             let from = `from=${encodeURIComponent(file.path)}&`;
-                            let dest = `dest=${encodeURIComponent('/' + self.currentUser.storageDatabase.company + '/' + self.currentUser.storageDatabase.directory + '/' + self.currentUser.currentPath.map(c => c.rootName).join('/'))}`;
+                            let dest = `dest=${encodeURIComponent(self.currentUser.storageDatabase.company + '/' + self.currentUser.storageDatabase.directory + '/' + self.currentUser.currentPath.map(c => c.rootName).join('/'))}`;
 
                             self.fromUser.httpGet(`${self.currentUser.moveUrl + from + dest}&skipCheckingUrl=${encodeURIComponent(true)}`, res => {
                                 console.log(res);
