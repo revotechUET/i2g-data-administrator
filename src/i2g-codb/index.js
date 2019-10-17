@@ -36,7 +36,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
     if (!window.localStorage.getItem('rememberAuth')) {
         wiDialog.authenticationDialog(function (userInfo) {
             onInit();
-        })
+        }, {'whoami': 'data-administrator-service'})
     }
     else {
         onInit();
@@ -95,7 +95,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
                     delete window.localStorage.rememberAuth;
                     wiDialog.authenticationDialog(function (userInfo) {
                         onInit();
-                    })
+                    }, {'whoami': 'data-administrator-service'})
                 }
             })
 
@@ -337,6 +337,6 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
         delete localStorage.token;
         wiDialog.authenticationDialog(function (userInfo) {
             onInit();
-        })
+        }, {'whoami': 'data-administrator-service'})
     }
 }
