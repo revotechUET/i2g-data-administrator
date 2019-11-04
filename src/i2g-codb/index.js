@@ -24,6 +24,7 @@ i2gCodbController.$inject = ['$scope', 'wiApi', '$timeout', '$http', 'wiDialog',
 function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) {
     let self = this;
     this.fileManager = config.fileManager;
+    this.previewUrl = config.previewUrl;
     this.admin;
     this.user;
     this.currentUser = this.admin;
