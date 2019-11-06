@@ -11,6 +11,10 @@ if (process.env.NODE_ENV === 'development') {
 }
 window.localStorage.setItem('AUTHENTICATION_SERVICE', config.authentication);
 var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual', 'angularModalService', 'wiDroppable', 'wiDialog', 'angularResizable']);
+console.log("set url")
+app.run(['wiApi', function(wiApi) {
+    wiApi.setBaseUrl(config.baseUrl);
+}]);
 app.component(componentName, {
     template: require('./template.html'),
     controller: i2gCodbController,
