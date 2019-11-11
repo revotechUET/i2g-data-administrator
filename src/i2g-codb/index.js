@@ -99,7 +99,6 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
                                     company: company.name,
                                     directory: company.storage_location,
                                     whereami: "WI_STORAGE_ADMIN",
-                                    token: window.localStorage.token
                                 }
                             })
                         })
