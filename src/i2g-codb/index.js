@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === 'development') {
 window.localStorage.setItem('AUTHENTICATION_SERVICE', config.authentication);
 var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual', 'angularModalService', 'wiDroppable', 'wiDialog', 'angularResizable']);
 console.log("set url")
-app.run(['wiApi', function(wiApi) {
+app.run(['wiApi', function (wiApi) {
     wiApi.setBaseUrl(config.baseUrl);
 }]);
 app.component(componentName, {
@@ -25,6 +25,7 @@ app.component(componentName, {
     }
 });
 i2gCodbController.$inject = ['$scope', 'wiApi', '$timeout', '$http', 'wiDialog', '$interval'];
+
 function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) {
     let self = this;
     this.fileManager = config.fileManager;
@@ -42,23 +43,23 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
         wiDialog.authenticationDialog(function (userInfo) {
             onInit();
         }, {'whoami': 'data-administrator-service'})
-    }
-    else {
+    } else {
         onInit();
         TimeCtrl();
     }
+
     function TimeCtrl() {
         var tick = function () {
             self.clock = new Date();
             hours = new Date();
             if (self.autoChangeTheme) {
                 if ((hours.getHours() > 5) && (hours.getHours() < 19)) {
-                    $timeout(()=>{
+                    $timeout(() => {
                         self.changeStyle('light');
                         self.activeTheme = 'light';
                     })
                 } else {
-                    $timeout(()=>{
+                    $timeout(() => {
                         self.changeStyle('dark');
                         self.activeTheme = 'dark';
                     })
@@ -71,22 +72,34 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
 
 
     function onInit() {
-        postPromise(`${config.authentication}/user/list`, { token: window.localStorage.token })
+        postPromise(`${config.authentication}/user/list`, {token: window.localStorage.token}, 'WI_AUTHENTICATE')
             .then(data => {
                 console.log(data);
                 let admin = data.find(i => {
                     return window.localStorage.username === i.username;
                 })
                 if (admin) {
-                    postPromise(`${config.baseUrl}/project/list`, { username: admin.username })
-                        .then(proj => {
+                    // postPromise(`${config.baseUrl}/project/list`, {username: admin.username}, 'WI_BACKEND')
+                    //     .then(proj => {
+                    //         $timeout(() => {
+                    //             let project = proj[0];
+                    //             let storage_databases = project.storage_databases[0];
+                    //             self.storageDatabaseAdmin = {
+                    //                 company: storage_databases.company,
+                    //                 directory: storage_databases.input_directory,
+                    //                 name: storage_databases.name,
+                    //             }
+                    //         })
+                    //     })
+                    postPromise(`${config.authentication}/company/info`, {idCompany: admin.idCompany}, 'WI_AUTHENTICATE')
+                        .then(company => {
                             $timeout(() => {
-                                let project = proj[0];
-                                let storage_databases = project.storage_databases[0];
+                                console.log("====", company)
                                 self.storageDatabaseAdmin = {
-                                    company: storage_databases.company,
-                                    directory: storage_databases.input_directory,
-                                    name: storage_databases.name,
+                                    company: company.name,
+                                    directory: company.storage_location,
+                                    whereami: "WI_STORAGE_ADMIN",
+                                    token: window.localStorage.token
                                 }
                             })
                         })
@@ -102,7 +115,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
                         onInit();
                     }, {'whoami': 'data-administrator-service'})
                 }
-            })
+            });
 
         if (!window.localStorage.getItem('currentTheme')) {
             window.localStorage.setItem('currentTheme', 'light');
@@ -120,6 +133,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
         //     label: 'hung'
         // });
     }
+
     this.getLabel = function (node) {
         return (node || {}).username || (node || {}).name || 'no name';
     }
@@ -157,7 +171,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
     this.clickTreeVirtual = function (event, node, selectIds, rootnode) {
         console.log(node);
         if (node.projects) return;
-        postPromise(`${config.baseUrl}/project/list`, { username: node.username })
+        postPromise(`${config.baseUrl}/project/list`, {username: node.username}, 'WI_BACKEND')
             .then(data => {
                 console.log('list project', data);
                 $timeout(() => {
@@ -192,8 +206,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
         if (theme === 'light') {
             element.classList.remove("dark-theme");
             window.localStorage.setItem('currentTheme', 'light');
-        }
-        else if (theme === 'dark') {
+        } else if (theme === 'dark') {
             element.classList.add("dark-theme");
             window.localStorage.setItem('currentTheme', 'dark');
         }
@@ -216,7 +229,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
                                 console.log(res);
                                 next();
                             })
-                        }catch (e){
+                        } catch (e) {
                             console.log(e);
                             self.pasting = false;
                         }
@@ -234,7 +247,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
                     break;
                 case 'cut':
                     async.eachSeries(self.pasteList, (file, next) => {
-                        try{
+                        try {
                             let from = `from=${encodeURIComponent(file.path)}&`;
                             let dest = `dest=${encodeURIComponent(self.currentUser.storageDatabase.company + '/' + self.currentUser.storageDatabase.directory + '/' + self.currentUser.currentPath.map(c => c.rootName).join('/'))}`;
 
@@ -242,7 +255,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
                                 console.log(res);
                                 next();
                             })
-                        }catch (e) {
+                        } catch (e) {
                             console.log(e);
                             self.pasting = false;
                         }
@@ -268,14 +281,16 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
         console.log(user);
         self.currentUser = user;
     }
-    function postPromise(url, data) {
+
+    function postPromise(url, data, service) {
         return new Promise(function (resolve, reject) {
             $http({
                 method: 'POST',
                 url: url,
                 data: data,
                 headers: {
-                    Authorization: window.localStorage.token
+                    Authorization: window.localStorage.token,
+                    Service: service
                 }
             }).then((response) => {
                 if (response.data.code === 200) resolve(response.data.content);
@@ -285,6 +300,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
             })
         });
     }
+
     this.addProjectStorage = function () {
         if (self.maxTab && self.listProjectStorage.length >= self.maxTab) return;
         self.listProjectStorage.push({
