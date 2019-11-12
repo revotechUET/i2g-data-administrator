@@ -24,6 +24,11 @@
                         {{self.pasteList.length}}
                     </p>
                 </span>
+                <span ng-click="self.verify()">
+                    <div>
+                        Verify
+                    </div>
+                </span>
                 <span ng-show="self.pasting">
                     Đang paste
                 </span>
@@ -152,3 +157,12 @@
         </div>
     </div>
 </div> -->
+<script type="text/ng-template" id="templateVerify">
+    <div class="ngdialog-buttons ">
+        <div class="newDialog slim-scroller">
+            <div ng-repeat="(idx, file) in self.verifyList"> {{file.name}} <span ng-click="self.deleteVerify(idx)">
+                x
+            </span></div>
+        </div>
+    </div>
+</script>

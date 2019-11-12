@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === 'development') {
     config = require('../config/config').production
 }
 window.localStorage.setItem('AUTHENTICATION_SERVICE', config.authentication);
-var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual', 'angularModalService', 'wiDroppable', 'wiDialog', 'angularResizable']);
+var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual', 'angularModalService', 'wiDroppable', 'wiDialog', 'angularResizable', 'ngDialog']);
 console.log("set url")
 app.run(['wiApi', function (wiApi) {
     wiApi.setBaseUrl(config.baseUrl);
@@ -24,9 +24,9 @@ app.component(componentName, {
         maxTab: '<'
     }
 });
-i2gCodbController.$inject = ['$scope', 'wiApi', '$timeout', '$http', 'wiDialog', '$interval'];
+i2gCodbController.$inject = ['$scope', 'wiApi', '$timeout', '$http', 'wiDialog', '$interval', 'ngDialog'];
 
-function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) {
+function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, ngDialog) {
     let self = this;
     this.fileManager = config.fileManager;
     this.previewUrl = config.previewUrl;
@@ -359,5 +359,31 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
         wiDialog.authenticationDialog(function (userInfo) {
             onInit();
         }, {'whoami': 'data-administrator-service'})
+    }
+    this.verify = function() {
+        self.verifyList = [{
+            name: "file 1"
+        }, {
+            name: "file 2"
+        }, {
+            name: "file 3"
+        }, {
+            name: "file 4"
+        }, {
+            name: "file 5"
+        }, {
+            name: "file 6"
+        }, {
+            name: "file 7"
+        }]
+        console.log("verify");
+        var dialog = ngDialog.open({
+            template: 'templateVerify',
+            className: 'ngdialog-theme-default',
+            scope: $scope,
+        });
+    }
+    this.deleteVerify = function(index) {
+        self.verifyList.splice(index, 1);
     }
 }
