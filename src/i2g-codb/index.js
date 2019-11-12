@@ -91,6 +91,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
                     //             }
                     //         })
                     //     })
+                    self.username = admin.username;
                     postPromise(`${config.authentication}/company/info`, {idCompany: admin.idCompany}, 'WI_AUTHENTICATE')
                         .then(company => {
                             $timeout(() => {
@@ -312,7 +313,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval) 
     }
     this.removeProjectStorage = function (index) {
         // $timeout(() => {
-        if (self.listProjectStorage.length === 1) return;
+        if (self.listProjectStorage.length === 0) return;
         self.listProjectStorage.splice(index, 1);
         self.currentTab = -1;
         // self.currentTab = 0;

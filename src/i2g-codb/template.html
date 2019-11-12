@@ -33,6 +33,7 @@
                 </span> -->
             </div>
             <div>
+                <span>{{self.username}}</span>
                 <span ng-click="self.showSetting = !self.showSetting"
                     style="margin-right: 0; background: #4a7def; color: #fff;">
                     <span class="ti ti-settings"></span>
@@ -43,7 +44,7 @@
         <div class="workspace">
             <div class="layout-right">
                 <span class="tab">
-                    <div ng-class="{'active': self.currentTab === -1}" ng-click="self.setCurrentTab(-1);">
+                    <div ng-class="{'active': self.currentTab === -1}" ng-click="self.setCurrentTab(-1);self.onClickFileExplorer(self.adminProjectStorage);">
                         <div class="tab-name">Admin</div>
                     </div>
                     <div class="tab-tab" ng-repeat="tab in self.listProjectStorage track by $index"
