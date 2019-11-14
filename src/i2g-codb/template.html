@@ -1,8 +1,9 @@
 <div class="slim-scroller" id="app">
     <div class="side-left">
         <wi-tree-view-virtual tree-root="self.listUser" hide-unmatched='true' get-children="self.getChildren"
-            click-fn='self.clickTreeVirtual' get-label="self.getLabel" get-icon='self.getIcon' run-match='self.runMatch'
-            keep-chidren='true'>
+                              click-fn='self.clickTreeVirtual' get-label="self.getLabel" get-icon='self.getIcon'
+                              run-match='self.runMatch'
+                              keep-chidren='true'>
         </wi-tree-view-virtual>
     </div>
     <div class="side-right">
@@ -40,7 +41,7 @@
             <div>
                 <span>{{self.username}}</span>
                 <span ng-click="self.showSetting = !self.showSetting"
-                    style="margin-right: 0; background: #4a7def; color: #fff;">
+                      style="margin-right: 0; background: #4a7def; color: #fff;">
                     <span class="ti ti-settings"></span>
                     <div style="padding-left: 0">Setting</div>
                 </span>
@@ -49,12 +50,14 @@
         <div class="workspace">
             <div class="layout-right">
                 <span class="tab">
-                    <div ng-class="{'active': self.currentTab === -1}" ng-click="self.setCurrentTab(-1);self.onClickFileExplorer(self.adminProjectStorage);">
+                    <div ng-class="{'active': self.currentTab === -1}"
+                         ng-click="self.setCurrentTab(-1);self.onClickFileExplorer(self.adminProjectStorage);">
                         <div class="tab-name">Admin</div>
                     </div>
                     <div class="tab-tab" ng-repeat="tab in self.listProjectStorage track by $index"
-                        ng-class="{'active': self.currentTab === $index}">
-                        <div class="tab-name" ng-click="self.setCurrentTab($index);self.onClickFileExplorer(self.listProjectStorage[$index].container);">{{tab.label}}</div>
+                         ng-class="{'active': self.currentTab === $index}">
+                        <div class="tab-name"
+                             ng-click="self.setCurrentTab($index);self.onClickFileExplorer(self.listProjectStorage[$index].container);">{{tab.label}}</div>
                         <div class="close-tab ti ti-close" ng-click="self.removeProjectStorage($index);"></div>
                     </div>
                     <div ng-click="self.addProjectStorage()" style="position: sticky; right: 0; background: #f4f6f8;">
@@ -64,18 +67,21 @@
                 <div class="layout-workspace">
                     <div>
                         <file-explorer ng-show="self.currentTab===-1"
-                            ng-click="self.onClickFileExplorer(self.adminProjectStorage);"
-                            url="{{self.fileManager}}" storage-database="self.storageDatabaseAdmin"
-                            id-project="1" set-container="self.setContainerAdmin" preview-url="{{self.previewUrl}}" hide-import-to-inventory="true">
+                                       ng-click="self.onClickFileExplorer(self.adminProjectStorage);"
+                                       url="{{self.fileManager}}" storage-database="self.storageDatabaseAdmin"
+                                       id-project="1" set-container="self.setContainerAdmin"
+                                       preview-url="{{self.previewUrl}}" hide-import-to-inventory="true">
                         </file-explorer>
                         <wi-droppable ng-repeat="projStorage in self.listProjectStorage track by $index"
-                            ng-show="self.currentTab===$index" style="height: 100%;" on-drop="self.getFnDrop($index)"
-                            container-style="{'width': '100%', 'height': '100%'}">
+                                      ng-show="self.currentTab===$index" style="height: 100%;"
+                                      on-drop="self.getFnDrop($index)"
+                                      container-style="{'width': '100%', 'height': '100%'}">
                             <file-explorer
-                                ng-click="self.onClickFileExplorer(self.listProjectStorage[$index].container);"
-                                url="{{self.fileManager}}"
-                                storage-database="self.getStorageDatabase($index)" id-project="1"
-                                set-container="self.setContainerProjectStorage($index)" preview-url="{{self.previewUrl}}" hide-import-to-inventory="true">
+                                    ng-click="self.onClickFileExplorer(self.listProjectStorage[$index].container);"
+                                    url="{{self.fileManager}}"
+                                    storage-database="self.getStorageDatabase($index)" id-project="1"
+                                    set-container="self.setContainerProjectStorage($index)"
+                                    preview-url="{{self.previewUrl}}" hide-import-to-inventory="true">
                             </file-explorer>
                         </wi-droppable>
                     </div>
@@ -95,16 +101,17 @@
                             <span class="slider round" ng-click="self.autoChangeTheme = !self.autoChangeTheme"></span>
                         </label>
                     </div>
-                    <div style="display: flex; margin-bottom: 20px;justify-content: space-between;" ng-show="!self.autoChangeTheme">
+                    <div style="display: flex; margin-bottom: 20px;justify-content: space-between;"
+                         ng-show="!self.autoChangeTheme">
                         <div ng-class="{'active': self.activeTheme === 'light'}"
-                            ng-click="self.changeStyle('light'); self.activeTheme = 'light'" class="theme theme1">
+                             ng-click="self.changeStyle('light'); self.activeTheme = 'light'" class="theme theme1">
                         </div>
                         <div ng-class="{'active': self.activeTheme === 'dark'}"
-                            ng-click="self.changeStyle('dark'); self.activeTheme = 'dark'" class="theme theme2"
-                            style="margin: 0;">
+                             ng-click="self.changeStyle('dark'); self.activeTheme = 'dark'" class="theme theme2"
+                             style="margin: 0;">
                         </div>
                     </div>
-                    
+
                 </div>
                 <div class="header" style="margin-top: 20px;">
                     <span class="title">
@@ -114,13 +121,13 @@
                     <span class="sub">Select font size for this website</span>
                     <div class="font-size">
                         <div ng-click="self.selectedFontSize = 10; self.changeFontSize('10px')"
-                            ng-class="{'choose-font-size':self.selectedFontSize === 10}"></div>
+                             ng-class="{'choose-font-size':self.selectedFontSize === 10}"></div>
                         <div ng-click="self.selectedFontSize = 12; self.changeFontSize('12px')"
-                            ng-class="{'choose-font-size':self.selectedFontSize === 12}"></div>
+                             ng-class="{'choose-font-size':self.selectedFontSize === 12}"></div>
                         <div ng-click="self.selectedFontSize = 14; self.changeFontSize('14px')"
-                            ng-class="{'choose-font-size':self.selectedFontSize === 14}"></div>
+                             ng-class="{'choose-font-size':self.selectedFontSize === 14}"></div>
                         <div ng-click="self.selectedFontSize = 16; self.changeFontSize('16px')"
-                            ng-class="{'choose-font-size':self.selectedFontSize === 16}"></div>
+                             ng-class="{'choose-font-size':self.selectedFontSize === 16}"></div>
                     </div>
                     <div class="font-size" style="background: none; margin-bottom: 20px;">
                         <span>10</span>
@@ -131,7 +138,7 @@
                 </div>
 
                 <div class="logout" ng-click="self.logout()">
-                    <div >Logout</div>
+                    <div>Logout</div>
                 </div>
             </div>
         </div>
@@ -160,9 +167,10 @@
 <script type="text/ng-template" id="templateVerify">
     <div class="ngdialog-buttons ">
         <div class="newDialog slim-scroller">
-            <div ng-repeat="(idx, file) in self.verifyList"> {{file.name}} <span ng-click="self.deleteVerify(idx)">
-                x
-            </span></div>
+            <div ng-repeat="(idx, file) in self.verifyList"> {{file.name}}
+                <span ng-click="self.syncVerify(file, idx)">(Sync_Button)</span>
+                <span ng-click="self.deleteVerify(file, idx)">(Delete_Button)</span>
+            </div>
         </div>
     </div>
 </script>

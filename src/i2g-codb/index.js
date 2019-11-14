@@ -360,30 +360,34 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
             onInit();
         }, {'whoami': 'data-administrator-service'})
     }
-    this.verify = function() {
-        self.verifyList = [{
-            name: "file 1"
-        }, {
-            name: "file 2"
-        }, {
-            name: "file 3"
-        }, {
-            name: "file 4"
-        }, {
-            name: "file 5"
-        }, {
-            name: "file 6"
-        }, {
-            name: "file 7"
-        }]
-        console.log("verify");
-        var dialog = ngDialog.open({
+
+    function getFilesInQueue() {
+        return new Promise((resolve => {
+            self.adminProjectStorage.httpPost(`${config.fileManager}/submit/get-files-in-queue`, {}, function (resp) {
+                self.verifyList = resp.data;
+                resolve();
+            })
+        }))
+    }
+
+    this.verify = async function () {
+        await getFilesInQueue();
+        let dialog = ngDialog.open({
             template: 'templateVerify',
             className: 'ngdialog-theme-default',
             scope: $scope,
         });
-    }
-    this.deleteVerify = function(index) {
-        self.verifyList.splice(index, 1);
+    };
+    this.deleteVerify = function (file, index) {
+        self.adminProjectStorage.httpPost(`${config.fileManager}/submit/delete-file-in-queue`, {files: [file]}, function (resp) {
+            getFilesInQueue();
+            // self.verifyList.splice(index, 1);
+        });
+    };
+    this.syncVerify = function (file, index) {
+        self.adminProjectStorage.httpPost(`${config.fileManager}/submit/sync-file-in-queue`, {files: [file]}, function (resp) {
+            getFilesInQueue();
+            // self.verifyList.splice(index, 1);
+        });
     }
 }
