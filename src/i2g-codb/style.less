@@ -442,17 +442,7 @@ i2g-codb {
         background  : #ecf0f3;
     }
 
-    .slim-scroller {
-        ::-webkit-scrollbar {
-            background: transparent !important;
-            width     : 5px !important;
-            height    : 5px !important;
-        }
 
-        ::-webkit-scrollbar-thumb {
-            background-color: #dcdcdc !important;
-        }
-    }
 
     input {
         border    : none;
@@ -502,7 +492,7 @@ i2g-codb {
 
     file-explorer .outside .main-content .selected {
         user-select: none;
-        background: #f9fafb;
+        background : #f9fafb;
     }
 
     file-explorer .outside .main-content .sidebar-properties {
@@ -794,5 +784,116 @@ input:checked+.slider:before {
             background: #fff;
         }
 
+    }
+}
+
+.templateVerify-row {
+    border-top     : 1px solid #e0e0e0;
+    padding        : 15px 0px;
+    display        : flex;
+    align-items    : center;
+    justify-content: space-between;
+    font-size      : 12px;
+
+    &>div {
+        display    : flex;
+        align-items: center;
+    }
+
+    // &:hover {
+    //     background: #f4f4f4;
+    // }
+}
+
+.templateVerify-sync-btn {
+    font-size     : 10px;
+    padding       : 7px 10px;
+    border        : 1px solid #fff;
+    letter-spacing: 2px;
+    line-height   : 1;
+    border-radius : 20px;
+    margin-left   : 15px;
+    transition    : all ease-in 0.2s;
+    cursor        : pointer;
+
+    &:hover {
+        background: #f2fffa;
+        color     : rgb(49, 173, 136);
+        transition: all ease-in 0.2s;
+        border    : 1px solid rgb(49, 173, 125);
+    }
+
+}
+
+.templateVerify-del-btn {
+    font-size    : 12px;
+    padding      : 5px;
+    border       : 1px solid #c4c4c4;
+    line-height  : 1;
+    border-radius: 20px;
+    margin-left  : 15px;
+    cursor       : pointer;
+    transition   : all ease-in 0.2s;
+
+    &:hover {
+        background: #ffdddd;
+        color     : rgb(173, 49, 49);
+        border    : 1px solid rgb(173, 49, 49);
+        transition: all ease-in 0.2s;
+
+    }
+}
+
+.synced {
+    background: #fff2f2;
+    color     : rgb(173, 49, 49);
+    transition: all ease-in 0.2s;
+    border    : 1px solid rgb(173, 49, 49) !important;
+}
+
+.sync {
+    background: #f2fffa;
+    color     : rgb(49, 173, 136);
+    transition: all ease-in 0.2s;
+    border    : 1px solid rgb(49, 173, 125) !important;
+}
+
+.all {
+    background: #f2f9ff;
+    transition: all ease-in 0.2s;
+    color     : rgb(67, 153, 245);
+    border    : 1px solid rgb(65, 125, 234) !important;
+}
+
+.templateVerify-btn {
+    font-size     : 10px;
+    padding       : 7px 10px;
+    border        : 1px solid #c4c4c4;
+    letter-spacing: 2px;
+    line-height   : 1;
+    border-radius : 2px;
+    margin-left   : 10px;
+    transition    : all ease-in 0.2s;
+    cursor        : pointer;
+}
+
+.ngdialog.ngdialog-theme-default .ngdialog-content {
+    background   : #fff !important;
+    padding      : 30px 15px 30px 30px !important;
+    border-radius: 3px !important;
+
+}
+.ngdialog {
+    overflow: hidden !important;
+}
+.slim-scroller {
+    ::-webkit-scrollbar {
+        background: transparent !important;
+        width     : 5px !important;
+        height    : 5px !important;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #dcdcdc !important;
     }
 }

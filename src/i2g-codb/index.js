@@ -35,6 +35,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     this.currentUser = this.admin;
     this.fromUser = null;
     this.listProjectStorage = [];
+    self.verifyStatus = 'all'
     self.currentFontSize = '12px';
     self.selectedFontSize = 12;
     self.autoChangeTheme = true;

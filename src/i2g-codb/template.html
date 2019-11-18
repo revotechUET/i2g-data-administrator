@@ -26,6 +26,7 @@
                     </p>
                 </span>
                 <span ng-click="self.verify()">
+                        <span class="ti ti-check-box"></span>
                     <div>
                         Verify
                     </div>
@@ -167,9 +168,34 @@
 <script type="text/ng-template" id="templateVerify">
     <div class="ngdialog-buttons ">
         <div class="newDialog slim-scroller">
-            <div ng-repeat="(idx, file) in self.verifyList"> {{file.name}}
-                <span ng-click="self.syncVerify(file, idx)">(Sync_Button)</span>
-                <span ng-click="self.deleteVerify(file, idx)">(Delete_Button)</span>
+            <div style=" margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+                <div style="font-weight: bold; font-size: 17px;">
+                    Verify
+                </div>
+                <div style=" display: flex; align-items: center; justify-content: space-between;">
+                    <div class="templateVerify-btn" ng-class="{'sync':self.verifyStatus === 'sync'}" ng-click="self.verifyStatus = 'sync'">
+                        SYNC
+                    </div>
+                    <div class="templateVerify-btn" ng-class="{'synced':self.verifyStatus === 'synced'}" ng-click="self.verifyStatus = 'synced'">
+                        SYNCED
+                    </div>
+                    <div class="templateVerify-btn" ng-class="{'all':self.verifyStatus === 'all'}" ng-click="self.verifyStatus = 'all'">
+                        ALL
+                    </div>
+                </div>
+            </div>
+            <div style="overflow: overlay; max-height: 60vh; padding-right: 15px;">
+                <div class="templateVerify-row" ng-repeat="(idx, file) in self.verifyList"  >
+                    <div style="display: block; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                        {{file.name}}
+                    </div>
+                    <div style="flex-basis: 100px">
+                        <span ng-click="self.syncVerify(file, idx)" class="templateVerify-sync-btn">SYNC</span>
+                        <span ng-click="self.deleteVerify(file, idx)" class="templateVerify-del-btn">
+                            <div class="ti ti-close"></div>
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
