@@ -362,17 +362,18 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
         }, {'whoami': 'data-administrator-service'})
     }
 
-    function getFilesInQueue() {
+    this.getFilesInQueue = function (type = 'all') {
         return new Promise((resolve => {
-            self.adminProjectStorage.httpPost(`${config.fileManager}/submit/get-files-in-queue`, {}, function (resp) {
+            self.adminProjectStorage.httpPost(`${config.fileManager}/submit/get-files-in-queue`, {type: type}, function (resp) {
                 self.verifyList = resp.data;
+                self.verifyStatus = type;
                 resolve();
             })
         }))
-    }
+    };
 
     this.verify = async function () {
-        await getFilesInQueue();
+        await self.getFilesInQueue();
         let dialog = ngDialog.open({
             template: 'templateVerify',
             className: 'ngdialog-theme-default',
@@ -381,14 +382,24 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     };
     this.deleteVerify = function (file, index) {
         self.adminProjectStorage.httpPost(`${config.fileManager}/submit/delete-file-in-queue`, {files: [file]}, function (resp) {
-            getFilesInQueue();
+            self.getFilesInQueue(self.verifyStatus);
             // self.verifyList.splice(index, 1);
         });
     };
     this.syncVerify = function (file, index) {
         self.adminProjectStorage.httpPost(`${config.fileManager}/submit/sync-file-in-queue`, {files: [file]}, function (resp) {
-            getFilesInQueue();
+            self.getFilesInQueue(self.verifyStatus);
             // self.verifyList.splice(index, 1);
         });
-    }
+    };
+    this.syncVerifyAll = function () {
+        self.adminProjectStorage.httpPost(`${config.fileManager}/submit/sync-file-in-queue`, {files: self.verifyList}, function (resp) {
+            self.getFilesInQueue(self.verifyStatus);
+        });
+    };
+    this.deleteVerifyAll = function () {
+        self.adminProjectStorage.httpPost(`${config.fileManager}/submit/delete-file-in-queue`, {files: self.verifyList}, function (resp) {
+            self.getFilesInQueue(self.verifyStatus);
+        });
+    };
 }

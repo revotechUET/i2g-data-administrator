@@ -173,24 +173,29 @@
                     Verify
                 </div>
                 <div style=" display: flex; align-items: center; justify-content: space-between;">
-                    <div class="templateVerify-btn" ng-class="{'sync':self.verifyStatus === 'sync'}" ng-click="self.verifyStatus = 'sync'">
-                        SYNC
+                    <div class="templateVerify-btn" ng-class="{'unsynced':self.verifyStatus === 'unsynced'}" ng-click="self.getFilesInQueue('unsynced')">
+                        UNSYNCED
                     </div>
-                    <div class="templateVerify-btn" ng-class="{'synced':self.verifyStatus === 'synced'}" ng-click="self.verifyStatus = 'synced'">
+                    <div class="templateVerify-btn" ng-class="{'synced':self.verifyStatus === 'synced'}" ng-click="self.getFilesInQueue('synced')">
                         SYNCED
                     </div>
-                    <div class="templateVerify-btn" ng-class="{'all':self.verifyStatus === 'all'}" ng-click="self.verifyStatus = 'all'">
+                    <div class="templateVerify-btn" ng-class="{'all':self.verifyStatus === 'all'}" ng-click="self.getFilesInQueue('all')">
                         ALL
                     </div>
                 </div>
             </div>
             <div style="overflow: overlay; max-height: 60vh; padding-right: 15px;">
+                <div class="templateVerify-row">
+                    <div style="display: block; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">&nbsp;</div>
+                    <span ng-click="self.syncVerifyAll()" class="templateVerify-sync-btn" title="Sync All" ng-show="self.verifyStatus === 'unsynced'">SYNC-ALL</span>
+                    <span ng-click="self.deleteVerifyAll()" class="templateVerify-del-btn" title="Delete all"><div class="ti ti-close"></div></span>
+                </div>
                 <div class="templateVerify-row" ng-repeat="(idx, file) in self.verifyList"  >
                     <div style="display: block; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
                         {{file.name}}
                     </div>
                     <div style="flex-basis: 100px">
-                        <span ng-click="self.syncVerify(file, idx)" class="templateVerify-sync-btn">SYNC</span>
+                        <span ng-click="self.syncVerify(file, idx)" class="templateVerify-sync-btn" ng-disabled="file.status === 'synced'">{{file.status === 'synced' ? 'SYNCED': 'SYNC'}}</span>
                         <span ng-click="self.deleteVerify(file, idx)" class="templateVerify-del-btn">
                             <div class="ti ti-close"></div>
                         </span>
