@@ -29,7 +29,6 @@ i2gCodbController.$inject = ['$scope', 'wiApi', '$timeout', '$http', 'wiDialog',
 function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, ngDialog) {
     let self = this;
     self.$scope = $scope
-    window.s = self;
     this.fileManager = config.fileManager;
     this.previewUrl = config.previewUrl;
     this.admin;
@@ -299,7 +298,8 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
                 if (response.data.code === 200) resolve(response.data.content);
                 else reject(new Error(response.data.reason));
             }, (err) => {
-                reject(err);
+                // reject(err);
+                toastr.error(err.message)
             })
         });
     }
@@ -405,7 +405,6 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
         });
     };
     this.genVerifyListItemTemplate = function(idx) {
-        console.log(self.verifyList)
         return `
         <div class="templateVerify-row" style="width:99%;">
             <div style="display: block; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
