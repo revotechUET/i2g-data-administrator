@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === 'development') {
     config = require('../config/config').production
 }
 window.localStorage.setItem('AUTHENTICATION_SERVICE', config.authentication);
-var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual', 'angularModalService', 'wiDroppable', 'wiDialog', 'angularResizable', 'ngDialog']);
+var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual', 'angularModalService', 'wiDroppable', 'wiDialog', 'angularResizable', 'ngDialog', 'virtualUl']);
 console.log("set url")
 app.run(['wiApi', function (wiApi) {
     wiApi.setBaseUrl(config.baseUrl);
@@ -28,6 +28,7 @@ i2gCodbController.$inject = ['$scope', 'wiApi', '$timeout', '$http', 'wiDialog',
 
 function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, ngDialog) {
     let self = this;
+    self.$scope = $scope
     this.fileManager = config.fileManager;
     this.previewUrl = config.previewUrl;
     this.admin;
@@ -297,7 +298,8 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
                 if (response.data.code === 200) resolve(response.data.content);
                 else reject(new Error(response.data.reason));
             }, (err) => {
-                reject(err);
+                // reject(err);
+                toastr.error(err.message)
             })
         });
     }
@@ -404,4 +406,19 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
             self.getFilesInQueue(self.verifyStatus);
         });
     };
+    this.genVerifyListItemTemplate = function(idx) {
+        return `
+        <div class="templateVerify-row" style="width:99%;">
+            <div style="display: block; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                ${(self.verifyList[idx] || {}).name}
+            </div>
+            <div style="flex-basis: 100px">
+                <span ng-click="self.syncVerify(self.verifyList[${idx}], ${idx})" class="templateVerify-sync-btn" ng-disabled="self.verifyList[${idx}].status === 'synced'">{{self.verifyList[${idx}].status === 'synced' ? 'SYNCED': 'SYNC'}}</span>
+                <span ng-click="self.deleteVerify(self.verifyList[${idx}], ${idx})" class="templateVerify-del-btn">
+                    <div class="ti ti-close"></div>
+                </span>
+            </div>
+        </div>
+        `
+    }
 }

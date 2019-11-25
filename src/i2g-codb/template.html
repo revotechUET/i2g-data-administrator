@@ -190,7 +190,7 @@
                     <span ng-click="self.syncVerifyAll()" class="templateVerify-sync-btn" title="Sync All" ng-show="self.verifyStatus === 'unsynced'">SYNC-ALL</span>
                     <span ng-click="self.deleteVerifyAll()" class="templateVerify-del-btn" title="Delete all"><div class="ti ti-close"></div></span>
                 </div>
-                <div class="templateVerify-row" ng-repeat="(idx, file) in self.verifyList"  >
+                <!-- <div class="templateVerify-row" ng-repeat="(idx, file) in self.verifyList"  >
                     <div style="display: block; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
                         {{file.name}}
                     </div>
@@ -200,7 +200,15 @@
                             <div class="ti ti-close"></div>
                         </span>
                     </div>
-                </div>
+                </div> -->
+                <virtual-ul
+                    get-component-by-idx="self.genVerifyListItemTemplate"
+                    num-items="self.verifyList.length"
+                    item-height="57"
+                    container-height="210"
+                    component-scope="self.$scope"
+                    watch-elements="[self.verifyList]">
+                </virtual-ul>
             </div>
         </div>
     </div>
