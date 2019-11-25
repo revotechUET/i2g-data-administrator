@@ -308,7 +308,8 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
             container: null,
             dropFn: null,
             storageDatabase: null,
-            label: 'New Tab'
+            label: 'New Tab',
+            isNewTab: true
         });
         self.currentTab = self.listProjectStorage.length - 1;
     }
@@ -338,6 +339,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
                         directory: storage_databases.input_directory,
                         name: storage_databases.name,
                     }
+                    self.listProjectStorage[index].isNewTab = false;
                 })
             }
         }
