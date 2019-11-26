@@ -32,7 +32,7 @@
                     </div>
                 </span>
                 <span ng-show="self.pasting">
-                    Đang paste
+                     Pasting
                 </span>
                 <!-- <span ng-click="self.addProjectStorage();">
                     <span class="zone-split-16x16"></span>
@@ -71,7 +71,7 @@
                                        ng-click="self.onClickFileExplorer(self.adminProjectStorage);"
                                        url="{{self.fileManager}}" storage-database="self.storageDatabaseAdmin"
                                        id-project="1" set-container="self.setContainerAdmin"
-                                       preview-url="{{self.previewUrl}}" hide-import-to-inventory="true"
+                                       preview-url="{{self.previewUrl}}" hide-import-to-inventory="true" is-database="false"
                                        hide-action-filter="true">
                         </file-explorer>
                         <wi-droppable ng-repeat="projStorage in self.listProjectStorage track by $index"
@@ -83,7 +83,7 @@
                                     url="{{self.fileManager}}"
                                     storage-database="self.getStorageDatabase($index)" id-project="1"
                                     set-container="self.setContainerProjectStorage($index)"
-                                    preview-url="{{self.previewUrl}}" hide-import-to-inventory="true"
+                                    preview-url="{{self.previewUrl}}" hide-import-to-inventory="true" is-database="projStorage.isNewTab"
                                     hide-action-filter="true">
                             </file-explorer>
                         </wi-droppable>
@@ -192,7 +192,7 @@
                     <span ng-click="self.syncVerifyAll()" class="templateVerify-sync-btn" title="Sync All" ng-show="self.verifyStatus === 'unsynced'">SYNC-ALL</span>
                     <span ng-click="self.deleteVerifyAll()" class="templateVerify-del-btn" title="Delete all"><div class="ti ti-close"></div></span>
                 </div>
-                <div class="templateVerify-row" ng-repeat="(idx, file) in self.verifyList"  >
+                <!-- <div class="templateVerify-row" ng-repeat="(idx, file) in self.verifyList"  >
                     <div style="display: block; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
                         {{file.name}}
                     </div>
@@ -202,7 +202,15 @@
                             <div class="ti ti-close"></div>
                         </span>
                     </div>
-                </div>
+                </div> -->
+                <virtual-ul
+                    get-component-by-idx="self.genVerifyListItemTemplate"
+                    num-items="self.verifyList.length"
+                    item-height="57"
+                    container-height="210"
+                    component-scope="self.$scope"
+                    watch-elements="[self.verifyList]">
+                </virtual-ul>
             </div>
         </div>
     </div>
