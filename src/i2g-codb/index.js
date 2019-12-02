@@ -135,6 +135,26 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
         //     label: 'hung'
         // });
     }
+    this.reload = function (){
+        self.requesting = true;
+        postPromise(`${config.authentication}/user/list`, {token: window.localStorage.token}, 'WI_AUTHENTICATE')
+            .then(data => {
+                $timeout(() => {
+                    self.listUser = data;
+                })
+            })
+            .catch((err) => {
+                if (err.status === 401) {
+                    delete window.localStorage.rememberAuth;
+                    wiDialog.authenticationDialog(function (userInfo) {
+                        onInit();
+                    }, {'whoami': 'data-administrator-service'})
+                }
+            })
+            .finally(()=>{
+                self.requesting = false;
+            })
+    }
 
     this.getLabel = function (node) {
         return (node || {}).username || (node || {}).name || 'no name';

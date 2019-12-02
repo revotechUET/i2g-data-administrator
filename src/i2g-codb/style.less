@@ -86,6 +86,43 @@ i2g-codb {
 
         }
     }
+    .loading {
+        top     : 0;
+        position: absolute;
+        width   : 100%;
+        z-index : 1;
+    }
+
+
+
+    .loading-bar {
+        width     : 100%;
+        height    : 3px;
+        background: #EBECF0;
+        position  : relative;
+        overflow  : hidden;
+    }
+
+    .bar-animation {
+        width                    : 50%;
+        height                   : 3px;
+        background               : #2196F3;
+        position                 : absolute;
+        transition               : 1s all ease-out;
+        animation-name           : loading-interminate;
+        animation-duration       : 1s;
+        animation-iteration-count: infinite;
+    }
+
+    @keyframes loading-interminate {
+        0% {
+            width: 0;
+        }
+
+        100% {
+            width: 100%;
+        }
+    }
 
     &>div {
         display : flex;
@@ -93,8 +130,13 @@ i2g-codb {
         width   : 100%;
         overflow: hidden;
     }
-
+    .hide-user-list {
+        flex-basis: 0 !important;
+    }
     .side-left {
+        padding-top: 50px;
+        overflow: hidden;
+        transition: all ease-in 0.2s;
         flex-basis  : 250px;
         background  : #fff;
         border-right: 2px solid #dbe2e8;
@@ -536,14 +578,13 @@ i2g-codb {
         padding         : 10px;
         font-size       : 12px;
         border-radius   : 2px;
-        background-color: #4B7DEF;
-        color           : #fff;
-        border-bottom   : 1px solid #f0f0f0;
+        border: 1px solid #c4c4c4;
+        text-indent: 30px;
 
         &::placeholder {
-            color         : rgba(255, 255, 255, 0.404);
+            color         : #000;
             font-weight   : normal;
-            letter-spacing: 1px;
+            // letter-spacing: 1px;
 
         }
     }

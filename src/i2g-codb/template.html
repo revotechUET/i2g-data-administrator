@@ -1,5 +1,14 @@
 <div class="slim-scroller" id="app">
-    <div class="side-left">
+    <div class="side-left" ng-class="{'hide-user-list': self.hideUserList}">
+        <div ng-show="self.requesting" class="loading">
+            <div class="loading-bar">
+                <span class="bar-animation"></span>
+            </div>
+        </div>
+        <div title="Search" style="position: absolute; top: 32px; left: 20px; font-weight: bold;">User-project list </div>
+        <div title="Search" style="position: absolute; top: 83px; left: 35px; cursor: pointer;" class="ti ti-search"></div>
+        <div title="Reload" style="position: absolute; top: 32px; right: 45px; cursor: pointer;" class="ti ti-reload" ng-click="self.reload()"></div>
+        <div title="Hide user list" style="position: absolute; top: 32px; right: 20px; cursor: pointer;" class="ti ti-angle-left" ng-click="self.hideUserList = !self.hideUserList"></div>
         <wi-tree-view-virtual tree-root="self.listUser" hide-unmatched='true' get-children="self.getChildren"
                               click-fn='self.clickTreeVirtual' get-label="self.getLabel" get-icon='self.getIcon'
                               run-match='self.runMatch'
@@ -9,6 +18,9 @@
     <div class="side-right">
         <div class="menu">
             <div>
+                <span title="Show user list" ng-show="self.hideUserList" ng-click="self.hideUserList = !self.hideUserList" style="margin-left: -20px;">
+                    <span class="ti ti-angle-right"></span>
+                </span>
                 <span ng-click="self.copyOrCut('copy')">
                     <span class="ti ti-files"></span>
                     <div>Copy</div>
