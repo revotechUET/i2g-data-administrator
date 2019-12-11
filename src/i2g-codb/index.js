@@ -316,10 +316,15 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
                 }
             }).then((response) => {
                 if (response.data.code === 200) resolve(response.data.content);
-                else reject(new Error(response.data.reason));
+                else {
+                    toastr.error(err.message);
+                    if (response.data.code === 401) self.logout();
+                    reject(new Error(response.data.reason));
+                }
             }, (err) => {
                 // reject(err);
-                toastr.error(err.message)
+                toastr.error(err.message || err.data.message)
+                if (err.data.code === 401) self.logout();
             })
         });
     }
