@@ -84,7 +84,7 @@
                                        url="{{self.fileManager}}" storage-database="self.storageDatabaseAdmin"
                                        id-project="1" set-container="self.setContainerAdmin"
                                        preview-url="{{self.previewUrl}}" hide-import-to-inventory="true" is-database="false"
-                                       hide-action-filter="true">
+                                       hide-action-filter="true" hide-associate="true">
                         </file-explorer>
                         <wi-droppable ng-repeat="projStorage in self.listProjectStorage track by $index"
                                       ng-show="self.currentTab===$index" style="height: 100%;"
@@ -96,7 +96,7 @@
                                     storage-database="self.getStorageDatabase($index)" id-project="1"
                                     set-container="self.setContainerProjectStorage($index)"
                                     preview-url="{{self.previewUrl}}" hide-import-to-inventory="true" is-database="projStorage.isNewTab"
-                                    hide-action-filter="true">
+                                    hide-action-filter="true" hide-associate="true">
                             </file-explorer>
                         </wi-droppable>
                     </div>
