@@ -386,6 +386,10 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     }
     this.logout = function () {
         delete localStorage.token;
+        delete self.storageDatabaseAdmin;
+        delete self.pasteList;
+        self.currentTab = -1;
+        self.listProjectStorage = [];
         wiDialog.authenticationDialog(function (userInfo) {
             onInit();
         }, {'whoami': 'data-administrator-service'})
