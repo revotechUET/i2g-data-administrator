@@ -1,1 +1,1 @@
-Hi!
+ webpack --mode=development
