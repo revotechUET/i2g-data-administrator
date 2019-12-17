@@ -157,7 +157,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     }
 
     this.getLabel = function (node) {
-        return (node || {}).username || (node || {}).alias || 'no name';
+        return (node || {}).username || (node || {}).alias || (node || {}).name || 'no name';
     }
     this.getIcon = function (node) {
         if (!node) return;
@@ -185,7 +185,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
         return [];
     }
     this.runMatch = function (node, filter) {
-        return ((node || {}).username || (node || {}).alias).includes(filter);
+        return ((node || {}).username || (node || {}).alias || (node || {}).name).includes(filter);
     }
     this.getChildrenDataset = function (node) {
         return [];
