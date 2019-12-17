@@ -360,7 +360,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
                 $timeout(() => {
                     let project = data[0];
                     let storage_databases = project.storage_databases[0];
-                    self.listProjectStorage[index].label = project.name;
+                    self.listProjectStorage[index].label = project.alias || project.name;
                     self.listProjectStorage[index].storageDatabase = {
                         company: storage_databases.company,
                         directory: storage_databases.input_directory,
