@@ -209,10 +209,10 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
         if (!self.currentUser.selectedList) return;
         self.fromUser = self.currentUser;
         console.log("=== copy ", self.fromUser.storageDatabase.directory);
-        self.pasteList = self.currentUser.selectedList.map((l => {
-            l.path = self.fromUser.storageDatabase.company + "/" + self.fromUser.storageDatabase.directory + l.path;
-            return l;
-        }));
+        self.pasteList = self.currentUser.selectedList.map((l => ({
+            ...l,
+            path: self.fromUser.storageDatabase.company + "/" + self.fromUser.storageDatabase.directory + l.path,
+        })));
         self.pasteList.action = action;
         // console.log(self.pasteList)
 
