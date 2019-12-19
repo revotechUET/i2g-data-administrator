@@ -248,7 +248,9 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
                             let dest = `dest=${encodeURIComponent(self.currentUser.storageDatabase.company + '/' + self.currentUser.storageDatabase.directory + '/' + self.currentUser.currentPath.map(c => c.rootName).join('/'))}`;
 
                             self.fromUser.httpGet(`${self.currentUser.copyUrl + from + dest}&skipCheckingUrl=${encodeURIComponent(true)}`, res => {
-                                console.log(res);
+                                if (!res.data.error && res.data.status === 'IN_PROGRESS') {
+                                  self.currentUser.addProcessing(res.data);
+                                }
                                 next();
                             })
                         } catch (e) {
@@ -274,7 +276,9 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
                             let dest = `dest=${encodeURIComponent(self.currentUser.storageDatabase.company + '/' + self.currentUser.storageDatabase.directory + '/' + self.currentUser.currentPath.map(c => c.rootName).join('/'))}`;
 
                             self.fromUser.httpGet(`${self.currentUser.moveUrl + from + dest}&skipCheckingUrl=${encodeURIComponent(true)}`, res => {
-                                console.log(res);
+                                if (!res.data.error && res.data.status === 'IN_PROGRESS') {
+                                  self.currentUser.addProcessing(res.data);
+                                }
                                 next();
                             })
                         } catch (e) {
