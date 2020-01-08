@@ -69,8 +69,8 @@
                     </div>
                     <div class="tab-tab" ng-repeat="tab in self.listProjectStorage track by $index"
                          ng-class="{'active': self.currentTab === $index}">
-                        <div class="tab-name"
-                             ng-click="self.setCurrentTab($index);self.onClickFileExplorer(self.listProjectStorage[$index].container);">{{tab.label}}</div>
+                        <div class="tab-name" title="{{tab.label}}"
+                             ng-click="self.setCurrentTab($index);self.onClickFileExplorer(self.listProjectStorage[$index].container);">{{tab.label}} ({{tab.createdBy}})</div>
                         <div class="close-tab ti ti-close" ng-click="self.removeProjectStorage($index);"></div>
                     </div>
                     <div ng-click="self.addProjectStorage()" style="position: sticky; right: 0; background: #f4f6f8;">

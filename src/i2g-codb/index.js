@@ -340,7 +340,8 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
             dropFn: null,
             storageDatabase: null,
             label: 'New Tab',
-            isNewTab: true
+            isNewTab: true,
+            createdBy: 'User'
         });
         self.currentTab = self.listProjectStorage.length - 1;
     }
@@ -365,6 +366,8 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
                     let project = data[0];
                     let storage_databases = project.storage_databases[0];
                     self.listProjectStorage[index].label = project.alias || project.name;
+                    self.listProjectStorage[index].createdBy = project.createdBy;
+                    // console.log(project)
                     self.listProjectStorage[index].storageDatabase = {
                         company: storage_databases.company,
                         directory: storage_databases.input_directory,
