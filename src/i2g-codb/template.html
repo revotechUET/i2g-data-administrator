@@ -202,7 +202,13 @@
                 <div class="templateVerify-row">
                     <div style="display: block; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">&nbsp;</div>
                     <span ng-click="self.syncVerifyAll()" class="templateVerify-sync-btn" title="Sync All" ng-show="self.verifyStatus === 'unsynced'">SYNC-ALL</span>
-                    <span ng-click="self.deleteVerifyAll()" class="templateVerify-del-btn" title="Delete all"><div class="ti ti-close"></div></span>
+                    <!--<span ng-click="self.deleteVerifyAll()" class="templateVerify-del-btn" title="Delete all"><div class="ti ti-close"></div></span>-->
+                    <span class="" title="Check All" style="margin: 5px 0 0;">Check All</span>
+                    <input
+                      style="margin: 3px 5px 0;"
+                      type="checkbox"
+                      ng-model="self.selectedAllVerify"
+                      ng-change="self.clickSelectedAllVerify(self.selectedAllVerify)">
                 </div>
                 <!-- <div class="templateVerify-row" ng-repeat="(idx, file) in self.verifyList"  >
                     <div style="display: block; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
@@ -215,15 +221,28 @@
                         </span>
                     </div>
                 </div> -->
-                <virtual-ul
-                    get-component-by-idx="self.genVerifyListItemTemplate"
-                    num-items="self.verifyList.length"
-                    item-height="57"
-                    container-height="210"
-                    component-scope="self.$scope"
-                    watch-elements="[self.verifyList]">
-                </virtual-ul>
+								<wi-table-view ng-if="self.verifyList.length" row-count="self.verifyList.length"
+									col-count="self.verifyTableColHeaders.length" col-headers="self.verifyTableColHeaders"
+									row-headers="self.getVerifyTableRowHeaders()" accessor="self.verifyTableValue"
+                  item-list="self.verifyList">
+								</wi-table-view>
+                <!--<virtual-ul-->
+                    <!--get-component-by-idx="self.genVerifyListItemTemplate"-->
+                    <!--num-items="self.verifyList.length"-->
+                    <!--item-height="57"-->
+                    <!--container-height="210"-->
+                    <!--component-scope="self.$scope"-->
+                    <!--watch-elements="[self.verifyList]">-->
+                <!--</virtual-ul>-->
             </div>
         </div>
+    </div>
+    <div class="ngdialog-buttons ">
+      <button type="button" class="ngdialog-button"
+        style="border: 1px solid;"
+        ng-click="self.syncSelectedVerifies()">Approve</button>
+      <button type="button" class="ngdialog-button"
+        style="border: 1px solid;"
+        ng-click="self.deleteSelectedVerifies()()">Reject</button>
     </div>
 </script>
