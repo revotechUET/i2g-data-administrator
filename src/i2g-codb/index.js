@@ -441,7 +441,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
   this.getFilesInQueue = function (type = 'all') {
     return new Promise((resolve => {
       self.adminProjectStorage.httpPost(`${config.fileManager}/submit/get-files-in-queue`, {type: type}, function (resp) {
-        self.verifyList = resp.data;
+        self.verifyList = resp.data.sort((a, b) => b.time.localeCompare(a.time));
         self.verifyStatus = type;
         resolve();
       })
