@@ -193,6 +193,9 @@
                     <div class="templateVerify-btn" ng-class="{'synced':self.verifyStatus === 'synced'}" ng-click="self.getFilesInQueue('synced')">
                         SYNCED
                     </div>
+                    <div class="templateVerify-btn" ng-class="{'unsynced':self.verifyStatus === 'rejected'}" ng-click="self.getFilesInQueue('rejected')">
+                        REJECTED
+                    </div>
                     <div class="templateVerify-btn" ng-class="{'all':self.verifyStatus === 'all'}" ng-click="self.getFilesInQueue('all')">
                         ALL
                     </div>
@@ -243,6 +246,6 @@
         ng-click="self.syncSelectedVerifies()">Approve</button>
       <button type="button" class="ngdialog-button"
         style="border: 1px solid;"
-        ng-click="self.deleteSelectedVerifies()()">Reject</button>
+        ng-click="self.deleteSelectedVerifies()">Reject</button>
     </div>
 </script>

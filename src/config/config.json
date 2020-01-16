@@ -1,12 +1,12 @@
 {
     "development":  {
-        "fileManager" : "https://users.i2g.cloud",
+        "fileManager" : "http://localhost:3004",
         "authentication": "https://users.i2g.cloud",
         "baseUrl": "https://api-1.i2g.cloud",
         "previewUrl": "https://users.i2g.cloud"
     },
     "production":  {
-        "fileManager" : "https://users.i2g.cloud",
+        "fileManager" : "https://localhost:3004",
         "authentication": "https://users.i2g.cloud",
         "baseUrl": "https://api-1.i2g.cloud",
         "previewUrl": "https://users.i2g.cloud"
