@@ -991,6 +991,7 @@ input:checked+.slider:before {
     overflow: hidden;
     border-radius: 2px;
     margin-left: 20px;
+    transition: all cubic-bezier(0.28, 0.42, 1, 1) 0.3s;
     &>div {
         display: flex;
         align-items: center;
@@ -1003,8 +1004,6 @@ input:checked+.slider:before {
     }
     &>span {
         color: #fff;
-    }
-    &>span {
         width: 0;
         transition: all cubic-bezier(0.28, 0.42, 1, 1) 0.3s;
     }
@@ -1016,7 +1015,6 @@ input:checked+.slider:before {
         &>span {
             width: fit-content;
             padding-right: 15px;
-            transition: all cubic-bezier(0.28, 0.42, 1, 1) 0.3s;
         }
         &>div {
             color: #fff;

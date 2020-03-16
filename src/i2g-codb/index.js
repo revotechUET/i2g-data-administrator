@@ -37,10 +37,10 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
   this.fromUser = null;
   this.listProjectStorage = [];
   self.verifyStatus = 'all'
+  self.unsyncedCount = 0;
   self.currentFontSize = '12px';
   self.selectedFontSize = 12;
   self.autoChangeTheme = true;
-  self.autoChangeThemeCheck = true;
   if (!window.localStorage.getItem('rememberAuth')) {
     wiDialog.authenticationDialog(function (userInfo) {
       onInit();
@@ -51,29 +51,19 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
   }
 
   function TimeCtrl() {
-    var tick = function () {
-      self.clock = new Date();
-      hours = new Date();
-      if (self.autoChangeTheme) {
-        if ((hours.getHours() > 5) && (hours.getHours() < 19)) {
-          $timeout(() => {
-            self.changeStyle('light');
-            self.activeTheme = 'light';
-          })
-        } else {
-          $timeout(() => {
-            self.changeStyle('dark');
-            self.activeTheme = 'dark';
-          })
-        }
+    const hours = new Date().getHours();
+    if (self.autoChangeTheme) {
+      if ((hours > 5) && (hours < 18)) {
+        changeStyle('light');
+      } else {
+        changeStyle('dark');
       }
     }
-    tick();
-    $interval(tick, 1000);
   }
-
+  setInterval(TimeCtrl, 60 * 1000);
 
   function onInit() {
+    updateSetting();
     postPromise(`${config.authentication}/user/list`, {token: window.localStorage.token}, 'WI_AUTHENTICATE')
       .then(data => {
         console.log(data);
@@ -135,7 +125,34 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     //     label: 'hung'
     // });
     self.verifyTableColHeaders = ['User', 'Project', 'Data', 'Date', 'Status', 'Select'];
+    function getUnsynced() {
+      self.adminProjectStorage.httpPost(`${config.fileManager}/submit/get-status`, null, function (res) {
+        self.unsyncedCount = res.data.unsynced;
+      }, { silent: true });
+    }
+    setTimeout(() => {
+      getUnsynced();
+      setInterval(getUnsynced, 5000);
+    }, 1000);
   }
+
+  this.updateSetting = updateSetting;
+  function updateSetting(newSetting) {
+    self.setting = JSON.parse(window.localStorage.getItem('setting')) || {
+      autoChangeTheme: true,
+      activeTheme: 'light',
+    };
+    Object.assign(self.setting, newSetting);
+    window.localStorage.setItem('setting', JSON.stringify(self.setting));
+    self.autoChangeTheme = self.setting.autoChangeTheme;
+    self.activeTheme = self.setting.activeTheme;
+    if (self.autoChangeTheme) {
+      TimeCtrl();
+    } else {
+      changeStyle(self.activeTheme);
+    }
+  }
+
   this.clickSelectedAllVerify = function(check) {
     self.verifyList.forEach(item => {
       item.selected = self.selectedAllVerify;
@@ -259,7 +276,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     }).css("font-size", size);
     self.currentFontSize = size;
   }
-  this.changeStyle = function (theme) {
+  function changeStyle(theme) {
     var element = document.getElementById("app");
     if (theme === 'light') {
       element.classList.remove("dark-theme");
@@ -268,9 +285,8 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
       element.classList.add("dark-theme");
       window.localStorage.setItem('currentTheme', 'dark');
     }
-
-
   }
+  this.changeStyle = changeStyle;
   this.pasting = false;
   this.paste = function () {
     // console.log('paste ', self.currentUser.storageDatabase.directory);
@@ -340,7 +356,6 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     self.adminProjectStorage = admin;
   }
   this.onClickFileExplorer = function (user) {
-    console.log(user);
     self.currentUser = user;
   }
 

@@ -42,6 +42,7 @@
                     <div>
                         Verify
                     </div>
+                    <p ng-show="self.unsyncedCount">{{self.unsyncedCount}}</p>
                 </span>
                 <span ng-show="self.pasting">
                      Pasting
@@ -112,17 +113,17 @@
                     <div style="display: flex; align-items: center; justify-content: space-between; margin: 20px 0;">
                         <div>Auto change theme with sun time</div>
                         <label class="switch">
-                            <input type="checkbox" ng-checked="self.autoChangeThemeCheck">
-                            <span class="slider round" ng-click="self.autoChangeTheme = !self.autoChangeTheme"></span>
+                            <input type="checkbox" ng-checked="self.autoChangeTheme" ng-click="self.updateSetting({autoChangeTheme: !self.autoChangeTheme});">
+                            <span class="slider round"></span>
                         </label>
                     </div>
                     <div style="display: flex; margin-bottom: 20px;justify-content: space-between;"
                          ng-show="!self.autoChangeTheme">
                         <div ng-class="{'active': self.activeTheme === 'light'}"
-                             ng-click="self.changeStyle('light'); self.activeTheme = 'light'" class="theme theme1">
+                             ng-click="self.changeStyle('light'); self.updateSetting({activeTheme: 'light'})" class="theme theme1">
                         </div>
                         <div ng-class="{'active': self.activeTheme === 'dark'}"
-                             ng-click="self.changeStyle('dark'); self.activeTheme = 'dark'" class="theme theme2"
+                             ng-click="self.changeStyle('dark'); self.updateSetting({activeTheme: 'dark'})" class="theme theme2"
                              style="margin: 0;">
                         </div>
                     </div>
@@ -192,7 +193,7 @@
                     <div class="fa fa-check"></div>
                     <span>All</span>
                 </div>
-                <div class="icon-hover-show-title icon-hover-show-title-actived" ng-show="self.verifyStatus === 'unsynced'">
+                <div class="icon-hover-show-title icon-hover-show-title-actived" ng-show="self.verifyStatus === 'unsynced'" ng-click="self.syncVerifyAll()">
                     <div class="fa fa-cloud-upload"></div>
                     <span>SYNC ALL</span>
                 </div>
