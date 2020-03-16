@@ -941,3 +941,108 @@ input:checked+.slider:before {
         background-color: #dcdcdc !important;
     }
 }
+.wi-modal-content {
+	max-height: 60vh;
+    height: auto;
+    .wi-modal-header {
+        border-bottom: none;
+        padding: 30px;
+    }
+    .wi-modal-body {
+        padding: 0 20px;
+    }
+    .wi-modal-footer {
+        padding: 30px;
+        border-top: none;
+        .ok-btn {
+            border: none;
+            background-color: #2588e4;
+            color: #fff;
+            &:hover {
+                background-color: #5ab0ff;
+            }
+        }
+        .close-btn {
+            border: none;
+            background-color: #4242421f;
+            color: #4e4e4e;
+            &:hover {
+                background-color: #42424242;
+            }
+        }
+    }
+}
+.icon-hover-show-title-actived {
+    background: #2587e5;
+    color: #fff;
+    &>span {
+        width: fit-content !important;
+        padding-right: 15px;
+    }
+    &>div {
+        color: #fff !important;
+    }
+}
+.icon-hover-show-title {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+    border-radius: 2px;
+    margin-left: 20px;
+    &>div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 35px;
+        min-width: 35px;
+        border-radius: 2px;
+        background: #2587e417;
+        color: #2587e4;
+    }
+    &>span {
+        color: #fff;
+    }
+    &>span {
+        width: 0;
+        transition: all cubic-bezier(0.28, 0.42, 1, 1) 0.3s;
+    }
+    &:hover {
+        color: #fff;
+    }
+    &:hover {
+        background: #2587e5;
+        &>span {
+            width: fit-content;
+            padding-right: 15px;
+            transition: all cubic-bezier(0.28, 0.42, 1, 1) 0.3s;
+        }
+        &>div {
+            color: #fff;
+        }
+    }
+    &.icon-active {
+        background-color: blue;
+        color: #fff;
+    }
+}
+wi-table-view .cell-col-1 {
+    display: table-cell;
+}
+wi-table-view div.table {
+    border: none;
+    margin: 0;
+    border-top: 2px solid #f5f5f5;
+}
+wi-table-view div.header {
+    background-color: transparent;
+}
+wi-table-view div.cell {
+    padding: 15px;
+    border-bottom: 2px solid #f5f5f5;
+    border-width: 0 0 2px 0;
+}
+wi-table-view div.indicator {
+    display: none !important;
+}

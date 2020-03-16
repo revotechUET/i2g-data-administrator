@@ -159,93 +159,56 @@
         </div>
     </div>
 </div>
-<!-- <div ng-if="self.showSetting"
-    style=" width: 100vw; height: 100vh; z-index: 1; top:0; background: #00000026; position: absolute; display: flex; align-items: center; justify-content: center;">
-    <div class="dialog-change-theme">
-        <div class="header-theme-dialog">
-            <span>Appearance</span>
-            <span class="ti ti-close" ng-click="self.showSetting = !self.showSetting"
-                style="cursor: pointer; font-size: 12px;"></span>
-        </div>
-        <div class="theme-opiton">
-            <div class="theme1" ng-click="self.changeTheme('light')">
-                <div class="choose"></div>
-                <span>Light</span>
-            </div>
-            <div class="theme2" ng-click="self.changeTheme('dark')">
-                <div class="choose"></div>
-                <span>Dark</span>
-            </div>
-        </div>
-    </div>
-</div> -->
+
 <script type="text/ng-template" id="templateVerify">
-    <div class="ngdialog-buttons ">
-        <div class="newDialog slim-scroller">
-            <div style=" margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
-                <div style="font-weight: bold; font-size: 17px;">
-                    Verify
+    <style>
+        .ngdialog.ngdialog-theme-default .ngdialog-content {
+            width: 900px !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+        }
+    </style>
+    <div class="wi-modal-content">
+        <div class="wi-modal-header">
+            <div style="font-size: 15px;">Verify</div>
+            <div style="display: flex;">
+                <div style="display: flex; align-items: center">
+                    <div>Check all</div>
+                    <input style="margin: 0 0 0 15px;" type="checkbox" ng-model="self.selectedAllVerify" ng-change="self.clickSelectedAllVerify(self.selectedAllVerify)">
                 </div>
-                <div style=" display: flex; align-items: center; justify-content: space-between;">
-                    <div class="templateVerify-btn" ng-class="{'unsynced':self.verifyStatus === 'unsynced'}" ng-click="self.getFilesInQueue('unsynced')">
-                        UNSYNCED
-                    </div>
-                    <div class="templateVerify-btn" ng-class="{'synced':self.verifyStatus === 'synced'}" ng-click="self.getFilesInQueue('synced')">
-                        SYNCED
-                    </div>
-                    <div class="templateVerify-btn" ng-class="{'unsynced':self.verifyStatus === 'rejected'}" ng-click="self.getFilesInQueue('rejected')">
-                        REJECTED
-                    </div>
-                    <div class="templateVerify-btn" ng-class="{'all':self.verifyStatus === 'all'}" ng-click="self.getFilesInQueue('all')">
-                        ALL
-                    </div>
+                <div class="icon-hover-show-title" ng-class="{'icon-hover-show-title-actived':self.verifyStatus === 'unsynced'}" ng-click="self.getFilesInQueue('unsynced')">
+                    <div class="fa fa-eye-slash"></div>
+                    <span>Unsynced</span>
+                </div>
+                <div class="icon-hover-show-title" ng-class="{'icon-hover-show-title-actived':self.verifyStatus === 'synced'}" ng-click="self.getFilesInQueue('synced')">
+                    <div class="fa fa-cloud"></div>
+                    <span>Synced</span>
+                </div>
+                <div class="icon-hover-show-title" ng-class="{'icon-hover-show-title-actived':self.verifyStatus === 'rejected'}" ng-click="self.getFilesInQueue('rejected')">
+                    <div class="fa fa-ban"></div>
+                    <span>Rejected</span>
+                </div>
+                <div class="icon-hover-show-title" ng-class="{'icon-hover-show-title-actived':self.verifyStatus === 'all'}" ng-click="self.getFilesInQueue('all')">
+                    <div class="fa fa-check"></div>
+                    <span>All</span>
+                </div>
+                <div class="icon-hover-show-title icon-hover-show-title-actived" ng-show="self.verifyStatus === 'unsynced'">
+                    <div class="fa fa-cloud-upload"></div>
+                    <span>SYNC ALL</span>
                 </div>
             </div>
-            <div style="overflow: overlay; max-height: 60vh; padding-right: 15px;">
-                <div class="templateVerify-row">
-                    <div style="display: block; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">&nbsp;</div>
-                    <span ng-click="self.syncVerifyAll()" class="templateVerify-sync-btn" title="Sync All" ng-show="self.verifyStatus === 'unsynced'">SYNC-ALL</span>
-                    <!--<span ng-click="self.deleteVerifyAll()" class="templateVerify-del-btn" title="Delete all"><div class="ti ti-close"></div></span>-->
-                    <span class="" title="Check All" style="margin: 5px 0 0;">Check All</span>
-                    <input
-                      style="margin: 3px 5px 0;"
-                      type="checkbox"
-                      ng-model="self.selectedAllVerify"
-                      ng-change="self.clickSelectedAllVerify(self.selectedAllVerify)">
-                </div>
-                <!-- <div class="templateVerify-row" ng-repeat="(idx, file) in self.verifyList"  >
-                    <div style="display: block; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-                        {{file.name}}
-                    </div>
-                    <div style="flex-basis: 100px">
-                        <span ng-click="self.syncVerify(file, idx)" class="templateVerify-sync-btn" ng-disabled="file.status === 'synced'">{{file.status === 'synced' ? 'SYNCED': 'SYNC'}}</span>
-                        <span ng-click="self.deleteVerify(file, idx)" class="templateVerify-del-btn">
-                            <div class="ti ti-close"></div>
-                        </span>
-                    </div>
-                </div> -->
-								<wi-table-view ng-if="self.verifyList.length" row-count="self.verifyList.length"
-									col-count="self.verifyTableColHeaders.length" col-headers="self.verifyTableColHeaders"
-									row-headers="self.getVerifyTableRowHeaders()" accessor="self.verifyTableValue"
-                  item-list="self.verifyList">
-								</wi-table-view>
-                <!--<virtual-ul-->
-                    <!--get-component-by-idx="self.genVerifyListItemTemplate"-->
-                    <!--num-items="self.verifyList.length"-->
-                    <!--item-height="57"-->
-                    <!--container-height="210"-->
-                    <!--component-scope="self.$scope"-->
-                    <!--watch-elements="[self.verifyList]">-->
-                <!--</virtual-ul>-->
-            </div>
+            
         </div>
-    </div>
-    <div class="ngdialog-buttons ">
-      <button type="button" class="ngdialog-button"
-        style="border: 1px solid;"
-        ng-click="self.syncSelectedVerifies()">Approve</button>
-      <button type="button" class="ngdialog-button"
-        style="border: 1px solid;"
-        ng-click="self.deleteSelectedVerifies()">Reject</button>
+        <div class="wi-modal-body slim-scroller">
+            <wi-table-view ng-if="self.verifyList.length" row-count="self.verifyList.length"
+                col-count="self.verifyTableColHeaders.length" col-headers="self.verifyTableColHeaders"
+                row-headers="self.getVerifyTableRowHeaders()" accessor="self.verifyTableValue" item-list="self.verifyList">
+            </wi-table-view>
+        </div>
+        <div class="wi-modal-footer">
+            <div class="btn-footer ok-btn" ng-click="self.syncSelectedVerifies()">Approve</div>
+            <div class="btn-footer close-btn" ng-click="self.deleteSelectedVerifies()">Reject</div>
+        </div>
     </div>
 </script>
+
