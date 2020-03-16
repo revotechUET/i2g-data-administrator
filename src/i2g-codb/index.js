@@ -132,7 +132,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     }
     setTimeout(() => {
       getUnsynced();
-      setInterval(getUnsynced, 5000);
+      setInterval(getUnsynced, 10000);
     }, 1000);
   }
 
@@ -472,35 +472,59 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
       width: '900px',
     });
   };
-  this.deleteSelectedVerifies = function() {
+  this.rejectSelectedVerifies = async function() {
+    const promises = [];
     self.verifyList.forEach((file, idx) => {
-      file.selected && self.deleteVerify(file, idx);
-    })
-  }
-  this.deleteVerify = function (file, index) {
-    self.adminProjectStorage.httpPost(`${config.fileManager}/submit/delete-file-in-queue`, {files: [file]}, function (resp) {
-      self.getFilesInQueue(self.verifyStatus);
-      // self.verifyList.splice(index, 1);
+      if (file.selected) {
+        promises.push(new Promise(res => {
+          self.rejectVerify(file, res);
+        }))
+      }
     });
+    await Promise.all(promises);
+    self.getFilesInQueue(self.verifyStatus);
+  }
+  this.rejectVerify = function (file, cb) {
+    self.adminProjectStorage.httpPost(`${config.fileManager}/submit/reject-file-in-queue`, {files: [file]}, cb);
   };
-  this.syncSelectedVerifies = function() {
+  this.deleteSelectedVerifies = async function () {
+    const promises = [];
     self.verifyList.forEach((file, idx) => {
-      file.selected && self.syncVerify(file, idx);
-    })
+      if (file.selected) {
+        promises.push(new Promise(res => {
+          self.deleteVerify(file, res);
+        }))
+      }
+    });
+    await Promise.all(promises);
+    self.getFilesInQueue(self.verifyStatus);
   }
-  this.syncVerify = function (file, index) {
-    self.adminProjectStorage.httpPost(`${config.fileManager}/submit/sync-file-in-queue`, {files: [file]}, function (resp) {
-      self.getFilesInQueue(self.verifyStatus);
-      // self.verifyList.splice(index, 1);
-    });
+  this.deleteVerify = function (file, cb) {
+    self.adminProjectStorage.httpPost(`${config.fileManager}/submit/delete-file-in-queue`, {files: [file]}, cb);
   };
-  this.syncVerifyAll = function () {
-    self.adminProjectStorage.httpPost(`${config.fileManager}/submit/sync-file-in-queue`, {files: self.verifyList}, function (resp) {
-      self.getFilesInQueue(self.verifyStatus);
+  this.syncSelectedVerifies = async function () {
+    const promises = [];
+    self.verifyList.forEach((file, idx) => {
+      if (file.selected) {
+        promises.push(new Promise(res => {
+          self.syncVerify(file, res);
+        }))
+      }
     });
+    await Promise.all(promises);
+    self.getFilesInQueue(self.verifyStatus);
+  }
+  this.syncVerify = function (file, cb) {
+    self.adminProjectStorage.httpPost(`${config.fileManager}/submit/sync-file-in-queue`, { files: [file] }, cb);
   };
-  this.deleteVerifyAll = function () {
-    self.adminProjectStorage.httpPost(`${config.fileManager}/submit/delete-file-in-queue`, {files: self.verifyList}, function (resp) {
+  this.syncVerifyAll = async function () {
+    await Promise.all(self.verifyList.map(file=> new Promise(res => {
+      self.syncVerify(file, res);
+    })));
+    self.getFilesInQueue(self.verifyStatus);
+  };
+  this.rejectVerifyAll = function () {
+    self.adminProjectStorage.httpPost(`${config.fileManager}/submit/reject-file-in-queue`, {files: self.verifyList}, function (resp) {
       self.getFilesInQueue(self.verifyStatus);
     });
   };
@@ -512,7 +536,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
             </div>
             <div style="flex-basis: 100px">
                 <span ng-click="self.syncVerify(self.verifyList[${idx}], ${idx})" class="templateVerify-sync-btn" ng-disabled="self.verifyList[${idx}].status === 'synced'">{{self.verifyList[${idx}].status === 'synced' ? 'SYNCED': 'SYNC'}}</span>
-                <span ng-click="self.deleteVerify(self.verifyList[${idx}], ${idx})" class="templateVerify-del-btn">
+                <span ng-click="self.rejectVerify(self.verifyList[${idx}], ${idx})" class="templateVerify-del-btn">
                     <div class="ti ti-close"></div>
                 </span>
             </div>

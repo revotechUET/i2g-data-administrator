@@ -198,7 +198,6 @@
                     <span>SYNC ALL</span>
                 </div>
             </div>
-            
         </div>
         <div class="wi-modal-body slim-scroller">
             <wi-table-view ng-if="self.verifyList.length" row-count="self.verifyList.length"
@@ -208,7 +207,8 @@
         </div>
         <div class="wi-modal-footer">
             <div class="btn-footer ok-btn" ng-click="self.syncSelectedVerifies()">Approve</div>
-            <div class="btn-footer close-btn" ng-click="self.deleteSelectedVerifies()">Reject</div>
+            <div class="btn-footer close-btn" ng-click="self.rejectSelectedVerifies()">Reject</div>
+            <div class="btn-footer close-btn" ng-click="self.deleteSelectedVerifies()">Delete</div>
         </div>
     </div>
 </script>
