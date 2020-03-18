@@ -941,37 +941,6 @@ input:checked+.slider:before {
         background-color: #dcdcdc !important;
     }
 }
-.wi-modal-content {
-	max-height: 60vh;
-    height: auto;
-    .wi-modal-header {
-        border-bottom: none;
-        padding: 30px;
-    }
-    .wi-modal-body {
-        padding: 0 20px;
-    }
-    .wi-modal-footer {
-        padding: 30px;
-        border-top: none;
-        .ok-btn {
-            border: none;
-            background-color: #2588e4;
-            color: #fff;
-            &:hover {
-                background-color: #5ab0ff;
-            }
-        }
-        .close-btn {
-            border: none;
-            background-color: #4242421f;
-            color: #4e4e4e;
-            &:hover {
-                background-color: #42424242;
-            }
-        }
-    }
-}
 .icon-hover-show-title-actived {
     background: #2587e5;
     color: #fff;
@@ -1062,4 +1031,7 @@ wi-table-view div.cell {
 }
 wi-table-view div.indicator {
     display: none !important;
+}
+.modal-header:before, .modal-header:after {
+	display: none;
 }
