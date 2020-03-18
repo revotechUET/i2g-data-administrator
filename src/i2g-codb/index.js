@@ -99,6 +99,22 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
         $timeout(() => {
           self.listUser = data;
         })
+        let interval;
+        function getUnsynced() {
+          if (!window.localStorage.token) {
+            clearInterval(interval);
+            return;
+          }
+          self.adminProjectStorage.httpPost(`${config.fileManager}/submit/get-status`, null, function (res) {
+            if (!res.data.error) {
+              self.unsyncedCount = res.data.unsynced;
+            }
+          }, { silent: true });
+        }
+        setTimeout(() => {
+          getUnsynced();
+          interval = setInterval(getUnsynced, 10000);
+        }, 1000);
       })
       .catch((err) => {
         if (err.status === 401) {
@@ -125,15 +141,6 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     //     label: 'hung'
     // });
     self.verifyTableColHeaders = ['User', 'Project', 'Data', 'Date', 'Status', 'Select'];
-    function getUnsynced() {
-      self.adminProjectStorage.httpPost(`${config.fileManager}/submit/get-status`, null, function (res) {
-        self.unsyncedCount = res.data.unsynced;
-      }, { silent: true });
-    }
-    setTimeout(() => {
-      getUnsynced();
-      setInterval(getUnsynced, 10000);
-    }, 1000);
   }
 
   this.updateSetting = updateSetting;
@@ -544,3 +551,4 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
         `
   }
 }
+toastr.options.preventDuplicates = true;
