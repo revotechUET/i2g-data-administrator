@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === 'development') {
   config = require('../config/config').production
 }
 window.localStorage.setItem('AUTHENTICATION_SERVICE', config.authentication);
-var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual', 'angularModalService', 'wiDroppable', 'wiDialog', 'angularResizable', 'ngDialog', 'virtualUl', 'wiTableView']);
+var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual', 'angularModalService', 'wiDroppable', 'wiDialog', 'angularResizable', 'ngDialog', 'virtualUl', 'wiTableView', 'wiAutocomplete']);
 console.log("set url")
 app.run(['wiApi', function (wiApi) {
   wiApi.setBaseUrl(config.baseUrl);
