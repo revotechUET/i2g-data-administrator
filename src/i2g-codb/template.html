@@ -18,32 +18,32 @@
     <div class="side-right">
         <div class="menu">
             <div>
-                <span title="Show user list" ng-show="self.hideUserList" ng-click="self.hideUserList = !self.hideUserList" style="margin-left: -20px;">
+                <button title="Show user list" ng-show="self.hideUserList" ng-click="self.hideUserList = !self.hideUserList" style="margin-left: -20px;">
                     <span class="ti ti-angle-right"></span>
-                </span>
-                <span ng-click="self.copyOrCut('copy')">
+                </button>
+                <button ng-click="self.copyOrCut('copy')" ng-disabled="!self.currentUser.selectedList.length">
                     <span class="ti ti-files"></span>
                     <div>Copy</div>
 
-                </span>
-                <span ng-click="self.copyOrCut('cut')">
+                </button>
+                <button ng-click="self.copyOrCut('cut')" ng-disabled="!self.currentUser.selectedList.length">
                     <span class="ti ti-cut"></span>
                     <div>Cut</div>
-                </span>
-                <span ng-click="self.paste()">
+                </button>
+                <button ng-click="self.paste()" ng-disabled="!self.pasteList">
                     <span class="ti ti-clipboard"></span>
                     <div>Paste</div>
                     <p ng-if="self.pasteList.length">
                         {{self.pasteList.length}}
                     </p>
-                </span>
-                <span ng-click="self.verify()">
+                </button>
+                <button ng-click="self.verify()">
                         <span class="ti ti-check-box"></span>
                     <div>
                         Verify
                     </div>
                     <p ng-show="self.unsyncedCount">{{self.unsyncedCount}}</p>
-                </span>
+                </button>
                 <span ng-show="self.pasting">
                      Pasting
                 </span>

@@ -11,7 +11,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 window.localStorage.setItem('AUTHENTICATION_SERVICE', config.authentication);
 var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual', 'angularModalService', 'wiDroppable', 'wiDialog', 'angularResizable', 'ngDialog', 'virtualUl', 'wiTableView', 'wiAutocomplete']);
-console.log("set url")
 app.run(['wiApi', function (wiApi) {
   wiApi.setBaseUrl(config.baseUrl);
 }]);
@@ -27,6 +26,7 @@ app.component(componentName, {
 i2gCodbController.$inject = ['$scope', 'wiApi', '$timeout', '$http', 'wiDialog', '$interval', 'ngDialog'];
 
 function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, ngDialog) {
+  window.ctrl = this;
   let self = this;
   self.$scope = $scope
   this.fileManager = config.fileManager;
@@ -264,9 +264,10 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
   self.listProject = [];
   self.listUser = [];
   self.storage_databases = {}
-  this.copyOrCut = function (action) {
-
+  this.copyOrCut = async function (action) {
     if (!self.currentUser.selectedList) return;
+    const res = await new Promise(resolve => self.currentUser.httpGet(self.currentUser.checkPermissionUrl + 'update', resolve));
+    if (res.data.error) return;
     self.fromUser = self.currentUser;
     console.log("=== copy ", self.fromUser.storageDatabase.directory);
     self.pasteList = self.currentUser.selectedList.map((l => ({
@@ -402,12 +403,14 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
       createdBy: 'User'
     });
     self.currentTab = self.listProjectStorage.length - 1;
+    self.currentUser = null;
   }
   this.removeProjectStorage = function (index) {
     // $timeout(() => {
     if (self.listProjectStorage.length === 0) return;
     self.listProjectStorage.splice(index, 1);
     self.currentTab = -1;
+    self.currentUser = self.adminProjectStorage;
     // self.currentTab = 0;
     // })
   }
