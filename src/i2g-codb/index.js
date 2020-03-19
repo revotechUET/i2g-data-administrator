@@ -430,6 +430,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
             company: storage_databases.company,
             directory: storage_databases.input_directory,
             name: storage_databases.name,
+            whereami: "WI_STORAGE_ADMIN",
           }
           self.listProjectStorage[index].isNewTab = false;
         })
