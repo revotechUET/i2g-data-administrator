@@ -1,6 +1,11 @@
 * {
     outline: none;
 }
+body {
+    .ngdialog {
+        z-index: 1000;
+    }
+}
 i2g-codb {
     position: relative;
 
@@ -528,10 +533,6 @@ i2g-codb {
         height: 37px;
     }
 
-    .storage-props .more-info .add-mdata {
-        background: #2d7eff;
-    }
-
     file-explorer .outside .main-content {
 
         .date .size .data-type .name-row {
@@ -1042,4 +1043,7 @@ wi-table-view div.indicator {
 }
 .modal-header:before, .modal-header:after {
 	display: none;
+}
+.storage-props .add-mdata {
+    background: #2d7eff;
 }

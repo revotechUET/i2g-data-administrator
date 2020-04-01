@@ -160,7 +160,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     }
   }
 
-  this.clickSelectedAllVerify = function(check) {
+  this.clickSelectedAllVerify = function() {
     self.verifyList.forEach(item => {
       item.selected = self.selectedAllVerify;
     })
@@ -469,6 +469,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
       self.adminProjectStorage.httpPost(`${config.fileManager}/submit/get-files-in-queue`, {type: type}, function (resp) {
         self.verifyList = resp.data.sort((a, b) => b.time.localeCompare(a.time));
         self.verifyStatus = type;
+        self.selectedAllVerify = false;
         resolve();
       })
     }))
@@ -499,6 +500,8 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     self.adminProjectStorage.httpPost(`${config.fileManager}/submit/reject-file-in-queue`, {files: [file]}, cb);
   };
   this.deleteSelectedVerifies = async function () {
+    const yes = await new Promise(res => wiDialog.confirmDialog("Delete Confirmation", "Are you sure you want to delete the selected item(s)?", res));
+    if (!yes) return;
     const promises = [];
     self.verifyList.forEach((file, idx) => {
       if (file.selected) {

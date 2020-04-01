@@ -54,11 +54,11 @@
             </div>
             <div>
                 <span>{{self.username}}</span>
-                <span ng-click="self.showSetting = !self.showSetting"
+                <button ng-click="self.showSetting = !self.showSetting"
                       style="margin-right: 0; background: #4a7def; color: #fff;">
                     <span class="ti ti-settings"></span>
                     <div style="padding-left: 0">Setting</div>
-                </span>
+                </button>
             </div>
         </div>
         <div class="workspace">
@@ -85,7 +85,7 @@
                                        url="{{self.fileManager}}" storage-database="self.storageDatabaseAdmin"
                                        id-project="1" set-container="self.setContainerAdmin"
                                        preview-url="{{self.previewUrl}}" hide-import-to-inventory="true" is-database="false"
-                                       hide-action-filter="false" hide-associate="true" well-readonly="true" check-permission="true">
+                                       hide-action-filter="false" hide-associate="true" readonly-values="['well']" check-permission="true">
                         </file-explorer>
                         <wi-droppable ng-repeat="projStorage in self.listProjectStorage track by $index"
                                       ng-show="self.currentTab===$index" style="height: 100%;"
@@ -97,7 +97,7 @@
                                     storage-database="self.getStorageDatabase($index)" id-project="1"
                                     set-container="self.setContainerProjectStorage($index)"
                                     preview-url="{{self.previewUrl}}" hide-import-to-inventory="true" is-database="projStorage.isNewTab"
-                                    hide-action-filter="false" hide-associate="true" well-readonly="true" check-permission="true">
+                                    hide-action-filter="false" hide-associate="true" readonly-values="['well']" check-permission="true">
                             </file-explorer>
                         </wi-droppable>
                     </div>
@@ -176,7 +176,7 @@
             <div style="display: flex;">
                 <div style="display: flex; align-items: center">
                     <div>Check all</div>
-                    <input style="margin: 0 0 0 15px;" type="checkbox" ng-model="self.selectedAllVerify" ng-change="self.clickSelectedAllVerify(self.selectedAllVerify)">
+                    <input style="margin: 0 0 0 15px;" type="checkbox" ng-model="self.selectedAllVerify" ng-change="self.clickSelectedAllVerify()">
                 </div>
                 <div class="icon-hover-show-title" ng-class="{'icon-hover-show-title-actived':self.verifyStatus === 'unsynced'}" ng-click="self.getFilesInQueue('unsynced')">
                     <div class="fa fa-eye-slash"></div>
