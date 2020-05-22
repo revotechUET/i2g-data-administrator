@@ -21,6 +21,10 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "jquery": "^3.4.1"
-  }
+    "@revotechuet/misc-component-vue": "^1.1.1-0",
+    "jquery": "^3.4.1",
+    "misc-component": "https://github.com/revotechUET/misc-component/archive/master.tar.gz",
+    "vue": "^2.6.11"
+  },
+  "sideEffects": []
 }

@@ -1,6 +1,8 @@
+import { WiTree, WiDroppable } from '@revotechuet/misc-component-vue';
+
 const moduleName = 'i2g-codb';
 const componentName = "i2gCodb";
-module.exports = {
+export default {
   name: moduleName
 };
 var config = require('../config/config').development;
@@ -10,7 +12,21 @@ if (process.env.NODE_ENV === 'development') {
   config = require('../config/config').production
 }
 window.localStorage.setItem('AUTHENTICATION_SERVICE', config.authentication);
-var app = angular.module(moduleName, ['file-explorer', 'wiApi', 'wiTreeViewVirtual', 'angularModalService', 'wiDroppable', 'wiDialog', 'angularResizable', 'ngDialog', 'virtualUl', 'wiTableView', 'wiAutocomplete', 'wiDeviceRequirement']);
+var app = angular.module(moduleName, [
+  'file-explorer',
+  'wiApi',
+  'wiTreeViewVirtual',
+  'angularModalService',
+  'wiDroppable',
+  'wiDialog',
+  'angularResizable',
+  'ngDialog',
+  'virtualUl',
+  'wiTableView',
+  'wiAutocomplete',
+  'wiDeviceRequirement',
+  'ngVue',
+]);
 app.run(['wiApi', function (wiApi) {
   wiApi.setBaseUrl(config.baseUrl);
 }]);
@@ -26,6 +42,10 @@ app.component(componentName, {
 i2gCodbController.$inject = ['$scope', 'wiApi', '$timeout', '$http', 'wiDialog', '$interval', 'ngDialog'];
 
 function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, ngDialog) {
+  Object.assign($scope, {
+    WiTree,
+    WiDroppable,
+  });
   window.ctrl = this;
   let self = this;
   self.$scope = $scope
@@ -244,20 +264,34 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     }
     return [];
   }
+  this.getChildrenKey = function (node) {
+    if (!node) return '';
+    if (node.idDataset) {
+      return 'curves';
+    } else if (node.idWell) {
+      return 'datasets';
+    } else if (node.idProject) {
+      return 'wells';
+    } else if (node.username) {
+      return 'projects';
+    }
+    return '';
+  }
   this.runMatch = function (node, filter) {
-    return ((node || {}).username || (node || {}).alias || (node || {}).name).includes(filter);
+    return ((node || {}).username || (node || {}).alias || (node || {}).name).toLowerCase().includes(filter.toLowerCase(0));
   }
   this.getChildrenDataset = function (node) {
     return [];
   }
   this.clickTreeVirtual = function (event, node, selectIds, rootnode) {
     console.log(node);
-    if (node.projects) return;
+    if (node.$meta.loaded || !node.username) return;
     postPromise(`${config.baseUrl}/project/list`, {username: node.username}, 'WI_BACKEND')
       .then(data => {
         console.log('list project', data);
         $timeout(() => {
           node.projects = data;
+          node.$meta.loaded = true;
         })
       })
   }
@@ -419,12 +453,17 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
   this.setCurrentTab = function (index) {
     self.currentTab = index;
   }
+  this.getDraggable = function (node) {
+    if (node.storage_databases) return true;
+    return false;
+  }
   this.getFnDrop = function (index) {
     if (!self.listProjectStorage[index].fnDrop) {
-      self.listProjectStorage[index].fnDrop = function (event, helper, data) {
+      self.listProjectStorage[index].fnDrop = function (event, data) {
         if (!data || !data.length) return;
+        const project = data[0];
+        if (!project.storage_databases) return;
         $timeout(() => {
-          let project = data[0];
           let storage_databases = project.storage_databases[0];
           self.listProjectStorage[index].label = project.alias || project.name;
           self.listProjectStorage[index].createdBy = project.createdBy;

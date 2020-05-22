@@ -5,15 +5,26 @@
                 <span class="bar-animation"></span>
             </div>
         </div>
-        <div title="Search" style="position: absolute; top: 32px; left: 20px; font-weight: bold;">User-project list </div>
-        <div title="Search" style="position: absolute; top: 83px; left: 35px; cursor: pointer;" class="ti ti-search"></div>
+        <div style="position: absolute; top: 32px; left: 20px; font-weight: bold;">User-project list </div>
         <div title="Reload" style="position: absolute; top: 32px; right: 45px; cursor: pointer;" class="ti ti-reload" ng-click="self.reload()"></div>
         <div title="Hide user list" style="position: absolute; top: 32px; right: 20px; cursor: pointer;" class="ti ti-angle-left" ng-click="self.hideUserList = !self.hideUserList"></div>
-        <wi-tree-view-virtual tree-root="self.listUser" hide-unmatched='true' get-children="self.getChildren"
-                              click-fn='self.clickTreeVirtual' get-label="self.getLabel" get-icon='self.getIcon'
-                              run-match='self.runMatch'
-                              keep-chidren='true'>
-        </wi-tree-view-virtual>
+        <div title="Search" style="position: absolute; top: 73px; left: 25px; cursor: pointer;" class="ti ti-search"></div>
+        <input style="margin: 1rem;padding: 1rem;line-height: 1.5rem;border: 1px solid #f0f0f0;text-indent: 30px;" type="text" placeholder="Search" ng-model="filter" />
+        <div style="flex: 1; height: 0;">
+            <vue-component root="WiTree"
+                props="{
+                    treeRoot: self.listUser,
+                    getChildrenKey: self.getChildrenKey,
+                    filter,
+                    clickFn: self.clickTreeVirtual,
+                    getLabel: self.getLabel,
+                    getIcon: self.getIcon,
+                    runMatch: self.runMatch,
+                    getDraggable: self.getDraggable,
+                }"
+            >
+            </vue-component>
+        </div>
     </div>
     <div class="side-right">
         <div class="menu">
@@ -87,19 +98,26 @@
                                        preview-url="{{self.previewUrl}}" hide-import-to-inventory="true" is-database="false"
                                        hide-action-filter="false" hide-associate="true" readonly-values="['well']" check-permission="true">
                         </file-explorer>
-                        <wi-droppable ng-repeat="projStorage in self.listProjectStorage track by $index"
-                                      ng-show="self.currentTab===$index" style="height: 100%;"
-                                      on-drop="self.getFnDrop($index)"
-                                      container-style="{'width': '100%', 'height': '100%'}">
-                            <file-explorer
-                                    ng-click="self.onClickFileExplorer(self.listProjectStorage[$index].container);"
-                                    url="{{self.fileManager}}"
-                                    storage-database="self.getStorageDatabase($index)" id-project="1"
-                                    set-container="self.setContainerProjectStorage($index)"
-                                    preview-url="{{self.previewUrl}}" hide-import-to-inventory="true" is-database="projStorage.isNewTab"
-                                    hide-action-filter="false" hide-associate="true" readonly-values="['well']" check-permission="true">
-                            </file-explorer>
-                        </wi-droppable>
+                        <file-explorer ng-repeat-start="projStorage in self.listProjectStorage track by $index" ng-show="self.currentTab===$index"
+                            ng-click="self.onClickFileExplorer(self.listProjectStorage[$index].container);"
+                            url="{{self.fileManager}}"
+                            storage-database="self.getStorageDatabase($index)" id-project="1"
+                            set-container="self.setContainerProjectStorage($index)"
+                            preview-url="{{self.previewUrl}}" hide-import-to-inventory="true" is-database="projStorage.isNewTab"
+                            hide-action-filter="false" hide-associate="true" readonly-values="['well']" check-permission="true">
+                        </file-explorer>
+                        <vue-component ng-repeat-end=""
+                            ng-show="self.currentTab===$index"
+                            root="WiDroppable"
+                            props="{
+                                onDrop: self.getFnDrop($index),
+                                onOver: self.onDragOver,
+                                dataType: 'tree-nodes',
+                                dropEffect: 'link',
+                                style: {color: 'red'}
+                            }"
+                        />
+                        </vue-component>
                     </div>
                 </div>
             </div>

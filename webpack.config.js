@@ -6,12 +6,20 @@ module.exports = {
 	},
 	mode: 'development',
 	module: {
-		rules: [{
-			test: /\.html$/,
-			use: ['html-loader']
-		}, {
-			test: /\.less$/,
-			use: ["style-loader", "css-loader", "less-loader"]
-		}]
-	}
+		rules: [
+			{
+				test: /\.html$/,
+				use: ['html-loader']
+			},
+			{
+				test: /\.less$/,
+				use: ["style-loader", "css-loader", "less-loader"]
+			},
+			{
+				test: /\.css$/i,
+				use: ['style-loader', 'css-loader'],
+			}
+		]
+	},
+	devtool: 'source-map'
 }
