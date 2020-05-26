@@ -23,7 +23,7 @@
                     getDraggable: self.getDraggable,
                 }"
             >
-            </vue-component>
+        </vue-component>
         </div>
     </div>
     <div class="side-right">
@@ -107,16 +107,13 @@
                             hide-action-filter="false" hide-associate="true" readonly-values="['well']" check-permission="true">
                         </file-explorer>
                         <vue-component ng-repeat-end=""
-                            ng-show="self.currentTab===$index"
+                            ng-if="self.currentTab===$index"
                             root="WiDroppable"
                             props="{
                                 onDrop: self.getFnDrop($index),
-                                onOver: self.onDragOver,
                                 dataType: 'tree-nodes',
-                                dropEffect: 'link',
-                                style: {color: 'red'}
                             }"
-                        />
+                        >
                         </vue-component>
                     </div>
                 </div>
