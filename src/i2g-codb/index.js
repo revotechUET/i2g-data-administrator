@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { WiTree, WiDroppable } from '@revotechuet/misc-component-vue';
 
 const moduleName = 'i2g-codb';
@@ -264,19 +265,6 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     }
     return [];
   }
-  this.getChildrenKey = function (node) {
-    if (!node) return '';
-    if (node.idDataset) {
-      return 'curves';
-    } else if (node.idWell) {
-      return 'datasets';
-    } else if (node.idProject) {
-      return 'wells';
-    } else if (node.username) {
-      return 'projects';
-    }
-    return '';
-  }
   this.runMatch = function (node, filter) {
     return ((node || {}).username || (node || {}).alias || (node || {}).name).toLowerCase().includes(filter.toLowerCase(0));
   }
@@ -285,14 +273,11 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
   }
   this.clickTreeVirtual = function (event, node, selectIds, rootnode) {
     console.log(node);
-    if (node.$meta.loaded || !node.username) return;
+    if (node.projects || !node.username) return;
     postPromise(`${config.baseUrl}/project/list`, {username: node.username}, 'WI_BACKEND')
       .then(data => {
         console.log('list project', data);
-        $timeout(() => {
-          node.projects = data;
-          node.$meta.loaded = true;
-        })
+        Vue.set(node, 'projects', data);
       })
   }
   self.listProject = [];
