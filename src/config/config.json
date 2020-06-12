@@ -1,9 +1,9 @@
 {
     "development":  {
-        "fileManager" : "https://users.i2g.cloud",
-        "authentication": "https://users.i2g.cloud",
-        "baseUrl": "https://api-1.i2g.cloud",
-        "previewUrl": "https://users.i2g.cloud"
+        "fileManager" : "http://127.0.0.1:2999",
+        "authentication": "http://127.0.0.1:2999",
+        "baseUrl": "http://127.0.0.1:2999",
+        "previewUrl": "http://127.0.0.1:2999"
     },
     "production":  {
         "fileManager" : "https://users.i2g.cloud",
