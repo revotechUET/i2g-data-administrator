@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { WiTree, WiDroppable } from '@revotechuet/misc-component-vue';
+import { WiTree, WiDroppable, wiLogin } from '@revotechuet/misc-component-vue';
 
 const moduleName = 'i2g-codb';
 const componentName = "i2gCodb";
@@ -9,10 +9,11 @@ export default {
 var config = require('../config/config').development;
 if (process.env.NODE_ENV === 'development') {
   config = require('../config/config').development
+  Object.assign(window.localStorage, config);
 } else if (process.env.NODE_ENV === 'production') {
-  config = require('../config/config').production
+  config = require('../config/config').production;
+  Object.assign(window.localStorage, config);
 }
-window.localStorage.setItem('AUTHENTICATION_SERVICE', config.authentication);
 var app = angular.module(moduleName, [
   'file-explorer',
   'wiApi',
@@ -29,7 +30,7 @@ var app = angular.module(moduleName, [
   'ngVue',
 ]);
 app.run(['wiApi', function (wiApi) {
-  wiApi.setBaseUrl(config.baseUrl);
+  wiApi.setBaseUrl(window.localStorage.getItem("BASE_URL"));
 }]);
 app.component(componentName, {
   template: require('./template.html'),
@@ -50,8 +51,8 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
   window.ctrl = this;
   let self = this;
   self.$scope = $scope
-  this.fileManager = config.fileManager;
-  this.previewUrl = config.previewUrl;
+  this.fileManager = window.localStorage.getItem("FILE_MANAGER");
+  this.previewUrl = window.localStorage.getItem("PREVIEW_URL");
   this.admin;
   this.user;
   this.currentUser = this.admin;
@@ -62,14 +63,13 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
   self.currentFontSize = '12px';
   self.selectedFontSize = 12;
   self.autoChangeTheme = true;
-  if (!window.localStorage.getItem('rememberAuth')) {
-    wiDialog.authenticationDialog(function (userInfo) {
-      onInit();
-    }, {'whoami': 'data-administrator-service'})
-  } else {
+  wiLogin.doLogin({ redirectUrl: window.location.origin, whoami: "i2g-data-administrator", loginPage: window.localStorage.getItem("AUTHENTICATION_HOME") });
+  setTimeout(() => {
     onInit();
     TimeCtrl();
-  }
+  }, 3000);
+
+  // }
 
   function TimeCtrl() {
     const hours = new Date().getHours();
@@ -84,28 +84,17 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
   setInterval(TimeCtrl, 60 * 1000);
 
   function onInit() {
+    console.log("init na");
     updateSetting();
-    postPromise(`${config.authentication}/user/list`, {token: window.localStorage.token}, 'WI_AUTHENTICATE')
+    postPromise(`${window.localStorage.getItem("AUTHENTICATION_SERVICE")}/user/list`, { token: window.localStorage.token }, 'WI_AUTHENTICATE')
       .then(data => {
         console.log(data);
         let admin = data.find(i => {
           return window.localStorage.username === i.username;
         })
         if (admin) {
-          // postPromise(`${config.baseUrl}/project/list`, {username: admin.username}, 'WI_BACKEND')
-          //     .then(proj => {
-          //         $timeout(() => {
-          //             let project = proj[0];
-          //             let storage_databases = project.storage_databases[0];
-          //             self.storageDatabaseAdmin = {
-          //                 company: storage_databases.company,
-          //                 directory: storage_databases.input_directory,
-          //                 name: storage_databases.name,
-          //             }
-          //         })
-          //     })
           self.username = admin.username;
-          postPromise(`${config.authentication}/company/info`, {idCompany: admin.idCompany}, 'WI_AUTHENTICATE')
+          postPromise(`${window.localStorage.getItem("AUTHENTICATION_SERVICE")}/company/info`, { idCompany: admin.idCompany }, 'WI_AUTHENTICATE')
             .then(company => {
               $timeout(() => {
                 console.log("====", company)
@@ -126,7 +115,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
             clearInterval(interval);
             return;
           }
-          self.adminProjectStorage.httpPost(`${config.fileManager}/submit/get-status`, null, function (res) {
+          self.adminProjectStorage.httpPost(`${window.localStorage.getItem("FILE_MANAGER")}/submit/get-status`, null, function (res) {
             if (!res.data.error) {
               self.unsyncedCount = res.data.unsynced;
             }
@@ -138,12 +127,13 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
         }, 1000);
       })
       .catch((err) => {
-        if (err.status === 401) {
-          delete window.localStorage.rememberAuth;
-          wiDialog.authenticationDialog(function (userInfo) {
-            onInit();
-          }, {'whoami': 'data-administrator-service'})
-        }
+        wiLogin.doLogin({ redirectUrl: window.location.origin });
+        // if (err.status === 401) {
+        //   delete window.localStorage.rememberAuth;
+        //   wiDialog.authenticationDialog(function (userInfo) {
+        //     onInit();
+        //   }, { 'whoami': 'data-administrator-service' })
+        // }
       });
 
     if (!window.localStorage.getItem('currentTheme')) {
@@ -181,33 +171,33 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     }
   }
 
-  this.clickSelectedAllVerify = function() {
+  this.clickSelectedAllVerify = function () {
     self.verifyList.forEach(item => {
       item.selected = self.selectedAllVerify;
     })
   }
   this.verifyTableValue = ([row, col]) => {
-		try {
-			switch(self.verifyTableColHeaders[col]){
-				case 'User':
-					return self.verifyList[row].username || 'N/A';
-				case 'Project':
-					return self.verifyList[row].project || 'N/A';
-				case 'Data':
-					return self.verifyList[row].name.slice(self.verifyList[row].name.indexOf('/')) || 'N/A';
-				case 'Date':
-					return moment(Number(self.verifyList[row].time)).format('YYYY/MM/DD hh:mm:ss') || 'N/A';
-				case 'Status':
+    try {
+      switch (self.verifyTableColHeaders[col]) {
+        case 'User':
+          return self.verifyList[row].username || 'N/A';
+        case 'Project':
+          return self.verifyList[row].project || 'N/A';
+        case 'Data':
+          return self.verifyList[row].name.slice(self.verifyList[row].name.indexOf('/')) || 'N/A';
+        case 'Date':
+          return moment(Number(self.verifyList[row].time)).format('YYYY/MM/DD hh:mm:ss') || 'N/A';
+        case 'Status':
           let status = self.verifyList[row].status;
-					return status[0].toUpperCase() + status.slice(1) || 'N/A';
+          return status[0].toUpperCase() + status.slice(1) || 'N/A';
         case 'Select':
-          return {type: 'checkbox'};
-				default:
-					return "this default";
-			}
-		} catch {
-			return 'N/A';
-		}
+          return { type: 'checkbox' };
+        default:
+          return "this default";
+      }
+    } catch {
+      return 'N/A';
+    }
   }
   let _verifyTableRowHeaders = [];
   this.getVerifyTableRowHeaders = () => {
@@ -216,9 +206,9 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
       .map((_, idx) => idx + 1));
     return _verifyTableRowHeaders;
   }
-  this.reload = function (){
+  this.reload = function () {
     self.requesting = true;
-    postPromise(`${config.authentication}/user/list`, {token: window.localStorage.token}, 'WI_AUTHENTICATE')
+    postPromise(`${window.localStorage.getItem("AUTHENTICATION_SERVICE")}/user/list`, { token: window.localStorage.token }, 'WI_AUTHENTICATE')
       .then(data => {
         $timeout(() => {
           self.listUser = data;
@@ -226,13 +216,14 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
       })
       .catch((err) => {
         if (err.status === 401) {
-          delete window.localStorage.rememberAuth;
-          wiDialog.authenticationDialog(function (userInfo) {
-            onInit();
-          }, {'whoami': 'data-administrator-service'})
+          wiLogin.doLogin({ redirectUrl: window.location.origin });
+          // delete window.localStorage.rememberAuth;
+          // wiDialog.authenticationDialog(function (userInfo) {
+          //   onInit();
+          // }, { 'whoami': 'data-administrator-service' })
         }
       })
-      .finally(()=>{
+      .finally(() => {
         self.requesting = false;
       })
   }
@@ -274,7 +265,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
   this.clickTreeVirtual = function (event, node, selectIds, rootnode) {
     console.log(node);
     if (node.projects || !node.username) return;
-    postPromise(`${config.baseUrl}/project/list`, {username: node.username}, 'WI_BACKEND')
+    postPromise(`${window.localStorage.getItem("BASE_URL")}/project/list`, { username: node.username }, 'WI_BACKEND')
       .then(data => {
         console.log('list project', data);
         Vue.set(node, 'projects', data);
@@ -478,19 +469,20 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     // self.listProjectStorage[index].container = 
   }
   this.logout = function () {
+    wiLogin.logout({ redirectUrl: window.location.origin, whoami: 'i2g-data-administrator', loginPage: window.localStorage.getItem("AUTHENTICATION_HOME") });
     delete localStorage.token;
     delete self.storageDatabaseAdmin;
     delete self.pasteList;
     self.currentTab = -1;
     self.listProjectStorage = [];
-    wiDialog.authenticationDialog(function (userInfo) {
-      onInit();
-    }, {'whoami': 'data-administrator-service'})
+    // wiDialog.authenticationDialog(function (userInfo) {
+    //   onInit();
+    // }, { 'whoami': 'data-administrator-service' })
   }
 
   this.getFilesInQueue = function (type = 'all') {
     return new Promise((resolve => {
-      self.adminProjectStorage.httpPost(`${config.fileManager}/submit/get-files-in-queue`, {type: type}, function (resp) {
+      self.adminProjectStorage.httpPost(`${window.localStorage.getItem("FILE_MANAGER")}/submit/get-files-in-queue`, { type: type }, function (resp) {
         self.verifyList = resp.data.sort((a, b) => b.time.localeCompare(a.time));
         self.verifyStatus = type;
         self.selectedAllVerify = false;
@@ -508,7 +500,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
       width: '900px',
     });
   };
-  this.rejectSelectedVerifies = async function() {
+  this.rejectSelectedVerifies = async function () {
     const promises = [];
     self.verifyList.forEach((file, idx) => {
       if (file.selected) {
@@ -521,7 +513,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     self.getFilesInQueue(self.verifyStatus);
   }
   this.rejectVerify = function (file, cb) {
-    self.adminProjectStorage.httpPost(`${config.fileManager}/submit/reject-file-in-queue`, {files: [file]}, cb);
+    self.adminProjectStorage.httpPost(`${window.localStorage.getItem("FILE_MANAGER")}/submit/reject-file-in-queue`, { files: [file] }, cb);
   };
   this.deleteSelectedVerifies = async function () {
     const yes = await new Promise(res => wiDialog.confirmDialog("Delete Confirmation", "Are you sure you want to delete the selected item(s)?", res));
@@ -538,7 +530,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     self.getFilesInQueue(self.verifyStatus);
   }
   this.deleteVerify = function (file, cb) {
-    self.adminProjectStorage.httpPost(`${config.fileManager}/submit/delete-file-in-queue`, {files: [file]}, cb);
+    self.adminProjectStorage.httpPost(`${window.localStorage.getItem("FILE_MANAGER")}/submit/delete-file-in-queue`, { files: [file] }, cb);
   };
   this.syncSelectedVerifies = async function () {
     const promises = [];
@@ -553,20 +545,20 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     self.getFilesInQueue(self.verifyStatus);
   }
   this.syncVerify = function (file, cb) {
-    self.adminProjectStorage.httpPost(`${config.fileManager}/submit/sync-file-in-queue`, { files: [file] }, cb);
+    self.adminProjectStorage.httpPost(`${window.localStorage.getItem("FILE_MANAGER")}/submit/sync-file-in-queue`, { files: [file] }, cb);
   };
   this.syncVerifyAll = async function () {
-    await Promise.all(self.verifyList.map(file=> new Promise(res => {
+    await Promise.all(self.verifyList.map(file => new Promise(res => {
       self.syncVerify(file, res);
     })));
     self.getFilesInQueue(self.verifyStatus);
   };
   this.rejectVerifyAll = function () {
-    self.adminProjectStorage.httpPost(`${config.fileManager}/submit/reject-file-in-queue`, {files: self.verifyList}, function (resp) {
+    self.adminProjectStorage.httpPost(`${window.localStorage.getItem("FILE_MANAGER")}/submit/reject-file-in-queue`, { files: self.verifyList }, function (resp) {
       self.getFilesInQueue(self.verifyStatus);
     });
   };
-  this.genVerifyListItemTemplate = function(idx) {
+  this.genVerifyListItemTemplate = function (idx) {
     return `
         <div class="templateVerify-row" style="width:99%;">
             <div style="display: block; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
