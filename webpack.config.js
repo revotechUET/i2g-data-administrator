@@ -1,3 +1,5 @@
+const webpack = require('webpack');
+
 module.exports = {
 	entry: './src/index.js',
 	output: {
@@ -21,6 +23,11 @@ module.exports = {
 			}
 		]
 	},
+  plugins: [
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'development',
+    }),
+  ],
 	resolve: {
 		symlinks: false,
 	},

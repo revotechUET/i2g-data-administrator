@@ -1,11 +1,13 @@
 import Vue from 'vue';
 import { WiTree, WiDroppable, wiLogin } from '@revotechuet/misc-component-vue';
+import genWiid from './wiid';
 
 const moduleName = 'i2g-codb';
 const componentName = "i2gCodb";
 export default {
   name: moduleName
 };
+console.log(process.env.NODE_ENV);
 var config = require('../config/config').development;
 if (process.env.NODE_ENV === 'development') {
   config = require('../config/config').development
@@ -379,6 +381,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
 
   function postPromise(url, data, service) {
     return new Promise(function (resolve, reject) {
+      const wiid = genWiid(data, window.localStorage.token);
       $http({
         method: 'POST',
         url: url,
@@ -386,7 +389,8 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
         headers: {
           Authorization: window.localStorage.token,
           Service: service
-        }
+        },
+        params: { wiid },
       }).then((response) => {
         if (response.data.code === 200) resolve(response.data.content);
         else {

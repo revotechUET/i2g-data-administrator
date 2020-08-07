@@ -1,4 +1,6 @@
+const webpack = require('webpack');
 var HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+
 module.exports = {
 	entry: './src/index.js',
 	output: {
@@ -16,6 +18,9 @@ module.exports = {
 		}]
 	},
   plugins: [
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'development',
+    }),
     new HardSourceWebpackPlugin()
   ]
 }
