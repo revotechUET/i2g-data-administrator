@@ -11,9 +11,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^6.0.3",
     "css-loader": "^3.2.0",
     "hard-source-webpack-plugin": "^0.13.1",
     "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^4.3.0",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
     "style-loader": "^1.0.0",
@@ -21,7 +24,7 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "@revotechuet/misc-component-vue": "^1.1.22",
+    "@revotechuet/misc-component-vue": "^1.1.26",
     "jquery": "^3.4.1",
     "misc-component": "https://github.com/revotechUET/misc-component/archive/master.tar.gz",
     "vue": "^2.6.11"
