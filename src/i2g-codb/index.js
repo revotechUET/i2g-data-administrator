@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import { WiTree, WiDroppable, wiLogin } from '@revotechuet/misc-component-vue';
+import { WiTree, WiDroppable, wiLoginClient } from '@revotechuet/misc-component-vue';
 import genWiid from './wiid';
-
+const wiLogin = new wiLoginClient('WI_PROJECT_STORAGE_CLIENT')
 const moduleName = 'i2g-codb';
 const componentName = "i2gCodb";
 export default {
@@ -32,7 +32,7 @@ var app = angular.module(moduleName, [
   'ngVue',
 ]);
 app.run(['wiApi', function (wiApi) {
-  wiApi.setBaseUrl(window.localStorage.getItem("BASE_URL"));
+  wiApi.client('WI_PROJECT_STORAGE_CLIENT').setBaseUrl(window.localStorage.getItem("BASE_URL"));
 }]);
 app.component(componentName, {
   template: require('./template.html'),
