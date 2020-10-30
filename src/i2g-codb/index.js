@@ -108,7 +108,8 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
 					className: 'ngdialog-theme-default',
 					showClose: false,
           scope: $scope,
-          closeByEscape: false
+          closeByEscape: false,
+          closeByDocument: false
 				})
 				self.acceptRefresh = function() {
 					localStorage.setItem('VER', newVersion)
