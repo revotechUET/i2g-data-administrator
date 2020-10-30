@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { WiTree, WiDroppable, wiLoginClient } from '@revotechuet/misc-component-vue';
 import genWiid from './wiid';
+// import 'wi-css'
 const wiLogin = new wiLoginClient('WI_PROJECT_STORAGE_CLIENT')
 const moduleName = 'i2g-codb';
 const componentName = "i2gCodb";
@@ -69,7 +70,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
   setTimeout(() => {
     onInit();
     TimeCtrl();
-  }, 3000);
+  }, 1000);
 
   // }
 
@@ -84,9 +85,47 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
     }
   }
   setInterval(TimeCtrl, 60 * 1000);
-
-  function onInit() {
+  async function updateVersion() {
+		let oldVersion = localStorage.getItem('VER') || localStorage.getItem('VERSION')
+		let newVersion = await new Promise((resolve) => {
+			$http({
+				method: 'GET',
+				url: window.location + 'i2g.version',
+				cache: false
+			}) 
+			.then(res => {
+				res ? resolve(res.data) : resolve(null)
+			})
+			.catch(err => {
+				resolve(null)
+			})
+		}) 
+		if(!newVersion) return
+		if(newVersion != oldVersion) {
+			await new Promise((resolve) => {
+				let dialog = ngDialog.open({
+					template: 'templateVersion',
+					className: 'ngdialog-theme-default',
+					showClose: false,
+          scope: $scope,
+          closeByEscape: false
+				})
+				self.acceptRefresh = function() {
+					localStorage.setItem('VER', newVersion)
+					location.reload(true)
+					// resolve()
+				}
+				self.cancelRefresh = function() {
+					dialog.close()
+					resolve()
+				}
+			})
+			
+		}
+	}
+  async function onInit() {
     console.log("init na");
+    await updateVersion()
     updateSetting();
     postPromise(`${window.localStorage.getItem("AUTHENTICATION_SERVICE")}/user/list`, { token: window.localStorage.token }, 'WI_AUTHENTICATE')
       .then(data => {

@@ -228,4 +228,107 @@
         </div>
     </div>
 </script>
-
+<script type="text/ng-template" id="templateVersion">
+    <style>
+        .ngdialog.ngdialog-theme-default .ngdialog-content {
+            /* width: 360px !important; */
+            padding: 0 !important;
+            box-shadow: none !important;
+            top: 15vh;
+        }
+        .wi-modal-content.wi-modal-small {
+            height: 25vh !important;
+        }
+        .wi-modal-footer {
+            display: grid;
+            grid-column-gap: 20px;
+            grid-template-columns: auto auto;
+            width: 100%;
+        }
+        .wi-button-center {
+            width: 100% !important;
+            font-weight: bold;
+            background-color: #f3f3f4;
+            height: 40px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            border-radius: 10px;
+            color: #9e9ea7;
+            user-select: none;
+            transition: all ease-in 0.1s;
+        }
+        .wi-button-center:hover {
+            cursor: pointer;
+            background-color: rgb(63 133 255 / 10%);
+            color: #3f84ff;
+            transition: all ease-in 0.1s;
+        }
+        .wi-button-center:active {
+            transition: all ease-in 0.1s;
+            transform: scale(0.96);
+        }
+        .wi-button-center-yes {
+            font-weight: bold !important;
+            width: 100% !important;
+            min-width: 100px;
+            background-color: var(--primary-color);
+            height: 40px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            border: transparent;
+            border-radius: 10px;
+            color: var(--text-white-color);
+            user-select: none;
+            transition: all ease-in 0.1s;
+            cursor: pointer;
+        }
+        input[type='submit'] {
+            font-weight: bold !important;
+            width: 100% !important;
+            min-width: 100px;
+            background-color: #3f84ff;
+            height: 40px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            border: transparent;
+            border-radius: 10px;
+            color: #fff;
+            user-select: none;
+            transition: all ease-in 0.1s;
+            cursor: pointer;
+        }
+        input:hover[type='submit'] {
+            background-color: #2f6fdf;
+            border-color: #3f84ff;
+            -webkit-box-shadow: 0 0 0 4px #3f84ff1f;
+            box-shadow: 0 0 0 4px #3f84ff1f;
+        }
+    </style>
+    <div class="wi-modal-content wi-modal-small">
+        <div class="wi-modal-header">
+            New version available
+        </div>
+        <div class="wi-modal-body slim-scroller">
+            Refresh browser to update?
+            
+        </div>
+        <div class="wi-modal-footer">
+            <div class="wi-button-center" ng-click="self.cancelRefresh()">
+                No
+            </div>
+            <!-- <div class="wi-button-center-yes">
+                <button>Yes</button>
+            </div> -->
+            <input type="submit" value="Yes" ng-click="self.acceptRefresh()">
+        </div>
+    </div>
+</script>
