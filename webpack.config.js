@@ -6,7 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
 	entry: './src/index.js',
 	output: {
-		filename: 'main.[contenthash].js',
+		filename: 'main.[hash:8].js',
 		path: __dirname + '/dist'
 	},
 	mode: 'development',
@@ -37,6 +37,9 @@ module.exports = {
 					from: 'public',
 					cacheTransform: true,
 					force: true,
+					globOptions: {
+						ignore: ['index.html'],
+					},
 				},
 			],
 		}),

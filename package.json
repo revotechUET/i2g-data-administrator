@@ -26,7 +26,6 @@
   "dependencies": {
     "@revotechuet/misc-component-vue": "^1.1.28",
     "jquery": "^3.4.1",
-    "misc-component": "https://github.com/revotechUET/misc-component/archive/master.tar.gz",
     "vue": "^2.6.11"
   },
   "sideEffects": []
