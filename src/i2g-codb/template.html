@@ -92,7 +92,7 @@
                 <div class="layout-workspace">
                     <div>
                         <!-- NAM COMMENT READONLY WELL -->
-                        <!-- <file-explorer ng-show="self.currentTab===-1"
+                        <file-explorer ng-show="self.currentTab===-1"
                                        ng-click="self.onClickFileExplorer(self.adminProjectStorage);"
                                        url="{{self.fileManager}}" storage-database="self.storageDatabaseAdmin"
                                        id-project="1" set-container="self.setContainerAdmin"
@@ -106,8 +106,8 @@
                             set-container="self.setContainerProjectStorage($index)"
                             preview-url="{{self.previewUrl}}" hide-import-to-inventory="true" is-database="projStorage.isNewTab"
                             hide-action-filter="false" hide-associate="true" readonly-values="['well']" check-permission="true">
-                        </file-explorer> -->
-                        <file-explorer ng-show="self.currentTab===-1"
+                        </file-explorer>
+                        <!-- <file-explorer ng-show="self.currentTab===-1"
                                        ng-click="self.onClickFileExplorer(self.adminProjectStorage);"
                                        url="{{self.fileManager}}" storage-database="self.storageDatabaseAdmin"
                                        id-project="1" set-container="self.setContainerAdmin"
@@ -121,7 +121,7 @@
                             set-container="self.setContainerProjectStorage($index)"
                             preview-url="{{self.previewUrl}}" hide-import-to-inventory="true" is-database="projStorage.isNewTab"
                             hide-action-filter="false" hide-associate="true" check-permission="true">
-                        </file-explorer>
+                        </file-explorer> -->
                         <vue-component ng-repeat-end=""
                             ng-if="self.currentTab===$index"
                             root="WiDroppable"
