@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { WiTree, WiDroppable, wiLoginClient } from '@revotechuet/misc-component-vue';
-import genWiid from './wiid';
+import { wiid as genWiid } from '@revotechuet/misc-component-vue';
 // import 'wi-css'
 const wiLogin = new wiLoginClient('WI_PROJECT_STORAGE_CLIENT')
 const moduleName = 'i2g-codb';
