@@ -44,9 +44,9 @@ app.component(componentName, {
     maxTab: '<'
   }
 });
-i2gCodbController.$inject = ['$scope', 'wiApi', '$timeout', '$http', 'wiDialog', '$interval', 'ngDialog'];
+i2gCodbController.$inject = ['$rootScope', '$scope', 'wiApi', '$timeout', '$http', 'wiDialog', '$interval', 'ngDialog'];
 
-function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, ngDialog) {
+function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog, $interval, ngDialog) {
   Object.assign($scope, {
     WiTree,
     WiDroppable,
@@ -139,6 +139,7 @@ function i2gCodbController($scope, wiApi, $timeout, $http, wiDialog, $interval, 
           postPromise(`${window.localStorage.getItem("AUTHENTICATION_SERVICE")}/company/info`, { idCompany: admin.idCompany }, 'WI_AUTHENTICATE')
             .then(company => {
               $timeout(() => {
+                $rootScope.taxonomies = company.taxonomies || {};
                 console.log("====", company)
                 self.storageDatabaseAdmin = {
                   company: company.name,
