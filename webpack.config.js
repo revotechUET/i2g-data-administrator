@@ -30,7 +30,9 @@ module.exports = {
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
     }),
-		new CleanWebpackPlugin(),
+		new CleanWebpackPlugin({
+			cleanOnceBeforeBuildPatterns: ['**/*', '!bower_components/**'],
+		}),
 		new CopyPlugin({
 			patterns: [
 				{

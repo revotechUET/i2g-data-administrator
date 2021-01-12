@@ -6,7 +6,7 @@
     "thenam153 <noilinhtinh016@gmail.com>"
   ],
   "license": "ISC",
-  "homepage": "https://github.com/thenam153/i2g-data-administrator",
+  "homepage": "https://github.com/revotechUET/i2g-data-administrator",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -15,7 +15,7 @@
     "tests"
   ],
   "dependencies": {
-    "file-explorer": "https://github.com/hoangbdUET/file-browser-angular.git",
+    "file-explorer": "https://github.com/revotechUET/file-browser-angular.git",
     "moment": "^2.24.0",
     "themify-icons": "^0.1.2",
     "async": "^3.1.0",
