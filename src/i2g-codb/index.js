@@ -537,7 +537,7 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
   };
 
   this.verify = async function () {
-    await self.getFilesInQueue();
+    await self.getFilesInQueue('unsynced');
     let dialog = ngDialog.open({
       template: 'templateVerify',
       className: 'ngdialog-theme-default',
