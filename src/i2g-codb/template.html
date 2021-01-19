@@ -196,7 +196,8 @@
 <script type="text/ng-template" id="templateVerify">
     <style>
         .ngdialog.ngdialog-theme-default .ngdialog-content {
-            width: 900px !important;
+            width: 1200px !important;
+            max-width: 90vw;
             padding: 0 !important;
             box-shadow: none !important;
         }
@@ -234,7 +235,8 @@
         <div class="wi-modal-body slim-scroller">
             <wi-table-view ng-if="self.verifyList.length" row-count="self.verifyList.length"
                 col-count="self.verifyTableColHeaders.length" col-headers="self.verifyTableColHeaders"
-                row-headers="self.getVerifyTableRowHeaders()" accessor="self.verifyTableValue" item-list="self.verifyList">
+                row-headers="self.getVerifyTableRowHeaders()" accessor="self.verifyTableValue" item-list="self.verifyList"
+                cell-click-fn="self.onCellClick">
             </wi-table-view>
         </div>
         <div class="wi-modal-footer">
@@ -335,7 +337,7 @@
         </div>
         <div class="wi-modal-body slim-scroller">
             Refresh browser to update?
-            
+
         </div>
         <div class="wi-modal-footer">
             <div class="wi-button-center" ng-click="self.cancelRefresh()">

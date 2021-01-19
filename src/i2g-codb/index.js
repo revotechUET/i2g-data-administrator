@@ -92,14 +92,14 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
 				method: 'GET',
 				url: window.location + 'i2g.version',
 				cache: false
-			}) 
+			})
 			.then(res => {
 				res ? resolve(res.data) : resolve(null)
 			})
 			.catch(err => {
 				resolve(null)
 			})
-		}) 
+		})
 		if(!newVersion) return
 		if(newVersion != oldVersion) {
 			await new Promise((resolve) => {
@@ -121,7 +121,7 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
 					resolve()
 				}
 			})
-			
+
 		}
 	}
   async function onInit() {
@@ -194,7 +194,7 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
     //     storageDatabase: null,
     //     label: 'hung'
     // });
-    self.verifyTableColHeaders = ['User', 'Project', 'Data', 'Date', 'Status', 'Select'];
+    self.verifyTableColHeaders = ['User', 'Project', 'Data', 'Date', 'Status', 'Metadata', 'Select'];
   }
 
   this.updateSetting = updateSetting;
@@ -233,6 +233,19 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
         case 'Status':
           let status = self.verifyList[row].status;
           return status[0].toUpperCase() + status.slice(1) || 'N/A';
+        case 'Metadata':
+          return {
+            type: 'button',
+            icon: 'ti ti-view-list-alt',
+            text: 'View Metadata',
+            onClick: async function (row, col) {
+              const item = self.verifyList[row];
+              console.log(item);
+              const res = await new Promise((resolve => self.adminProjectStorage.httpGet(`${self.adminProjectStorage.getMetadataUrl}?rawPath=true&file_path=${item.path}`, resolve)));
+              const metadata = res.data.Metadata;
+              metadata && self.adminProjectStorage.previewMetadata(res.data.Metadata, item.name)
+            }
+          };
         case 'Select':
           return { type: 'checkbox' };
         default:
@@ -511,7 +524,7 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
       }
     }
     return self.listProjectStorage[index].setContainer;
-    // self.listProjectStorage[index].container = 
+    // self.listProjectStorage[index].container =
   }
   this.logout = function () {
     wiLogin.logout({ redirectUrl: window.location.origin, whoami: 'i2g-data-administrator', loginPage: window.localStorage.getItem("AUTHENTICATION_HOME") });
