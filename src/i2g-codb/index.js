@@ -61,7 +61,7 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
   this.currentUser = this.admin;
   this.fromUser = null;
   this.listProjectStorage = [];
-  self.verifyStatus = 'all'
+  self.verifyStatus = 'unsynced'
   self.unsyncedCount = 0;
   self.currentFontSize = '12px';
   self.selectedFontSize = 12;
@@ -194,7 +194,7 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
     //     storageDatabase: null,
     //     label: 'hung'
     // });
-    self.verifyTableColHeaders = ['User', 'Project', 'Data', 'Date', 'Status', 'Metadata', 'Select'];
+    self.verifyTableColHeaders = ['User', 'Project', 'Data', 'Date', 'Status', 'Metadata', 'Select', 'Destination'];
   }
 
   this.updateSetting = updateSetting;
@@ -248,6 +248,13 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
           };
         case 'Select':
           return { type: 'checkbox' };
+        case 'Destination':
+          const desDir = self.verifyList[row].desDir;
+          return {
+            type: 'custom',
+            value: desDir || 'Default',
+            style: { color:  desDir ? 'green' : null }
+          }
         default:
           return "this default";
       }
@@ -550,7 +557,7 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
   };
 
   this.verify = async function () {
-    await self.getFilesInQueue('unsynced');
+    await self.getFilesInQueue(self.verifyStatus);
     let dialog = ngDialog.open({
       template: 'templateVerify',
       className: 'ngdialog-theme-default',
@@ -591,45 +598,38 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
     self.adminProjectStorage.httpPost(`${window.localStorage.getItem("FILE_MANAGER")}/submit/delete-file-in-queue`, { files: [file] }, cb);
   };
   this.syncSelectedVerifies = async function () {
-    const promises = [];
-    self.verifyList.forEach((file, idx) => {
-      if (file.selected) {
-        promises.push(new Promise(res => {
-          self.syncVerify(file, res);
-        }))
-      }
+    const selecteds = self.verifyList.filter(f => f.selected);
+    if (!selecteds.length) return;
+    const noDes = selecteds.filter(f => !f.desDir);
+    if (noDes.length) {
+      const yes = await new Promise(res => wiDialog.confirmDialog("Confirmation",
+        `<b style="font-style:normal">The following items did not match at any rules, sync to default directory?</b><br>${noDes.map(f => f.name).join('<br>')}`,
+        res));
+      if (!yes) return;
+    }
+    await new Promise(res => {
+      self.syncVerify(selecteds, res);
     });
-    await Promise.all(promises);
     self.getFilesInQueue(self.verifyStatus);
   }
-  this.syncVerify = function (file, cb) {
-    self.adminProjectStorage.httpPost(`${window.localStorage.getItem("FILE_MANAGER")}/submit/sync-file-in-queue`, { files: [file] }, cb);
+  this.syncVerify = function (files, cb) {
+    self.adminProjectStorage.httpPost(`${window.localStorage.getItem("FILE_MANAGER")}/submit/sync-file-in-queue`, { files }, cb);
   };
   this.syncVerifyAll = async function () {
-    await Promise.all(self.verifyList.map(file => new Promise(res => {
-      self.syncVerify(file, res);
-    })));
-    self.getFilesInQueue(self.verifyStatus);
+    self.verifyList.forEach(f => {
+      f.selectedBak = f.selected
+      f.selected = true
+    });
+    self.syncSelectedVerifies();
+    self.verifyList.forEach(f => {
+      f.selected = f.selectedBak
+      delete f.selectedBak
+    });
   };
   this.rejectVerifyAll = function () {
     self.adminProjectStorage.httpPost(`${window.localStorage.getItem("FILE_MANAGER")}/submit/reject-file-in-queue`, { files: self.verifyList }, function (resp) {
       self.getFilesInQueue(self.verifyStatus);
     });
   };
-  this.genVerifyListItemTemplate = function (idx) {
-    return `
-        <div class="templateVerify-row" style="width:99%;">
-            <div style="display: block; flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-                ${(self.verifyList[idx] || {}).name}
-            </div>
-            <div style="flex-basis: 100px">
-                <span ng-click="self.syncVerify(self.verifyList[${idx}], ${idx})" class="templateVerify-sync-btn" ng-disabled="self.verifyList[${idx}].status === 'synced'">{{self.verifyList[${idx}].status === 'synced' ? 'SYNCED': 'SYNC'}}</span>
-                <span ng-click="self.rejectVerify(self.verifyList[${idx}], ${idx})" class="templateVerify-del-btn">
-                    <div class="ti ti-close"></div>
-                </span>
-            </div>
-        </div>
-        `
-  }
 }
 toastr.options.preventDuplicates = true;
