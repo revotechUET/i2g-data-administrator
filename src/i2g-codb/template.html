@@ -5,8 +5,8 @@
                 <span class="bar-animation"></span>
             </div>
         </div>
-        <div style="position: absolute; top: 32px; left: 20px; font-weight: bold;">User-project list </div>
-        <div title="Reload" style="position: absolute; top: 32px; right: 45px; cursor: pointer;" class="ti ti-reload" ng-click="self.reload()"></div>
+        <div style="position: absolute; top: 32px; left: 20px; font-weight: bold;">User-workspace list </div>
+        <div title="Refresh" style="position: absolute; top: 32px; right: 45px; cursor: pointer;" class="ti ti-reload" ng-click="self.getListUser()"></div>
         <div title="Hide user list" style="position: absolute; top: 32px; right: 20px; cursor: pointer;" class="ti ti-angle-left" ng-click="self.hideUserList = !self.hideUserList"></div>
         <div title="Search" style="position: absolute; top: 73px; left: 25px; cursor: pointer;" class="ti ti-search"></div>
         <input style="margin: 1rem;padding: 1rem;line-height: 1.5rem;border: 1px solid #f0f0f0;text-indent: 30px;" type="text" placeholder="Search" ng-model="filter" />
@@ -41,7 +41,7 @@
                     <span class="ti ti-cut"></span>
                     <div>Cut</div>
                 </button>
-                <button ng-click="self.paste()" ng-disabled="!self.pasteList">
+                <button ng-click="self.paste()" ng-disabled="!self.pasteList || self.pasteList.user === self.currentUser">
                     <span class="ti ti-clipboard"></span>
                     <div>Paste</div>
                     <p ng-if="self.pasteList.length">

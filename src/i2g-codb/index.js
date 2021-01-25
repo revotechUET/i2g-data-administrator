@@ -125,59 +125,25 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
 		}
 	}
   async function onInit() {
-    console.log("init na");
     await updateVersion()
     updateSetting();
-    postPromise(`${window.localStorage.getItem("AUTHENTICATION_SERVICE")}/user/list`, { token: window.localStorage.token }, 'WI_AUTHENTICATE')
-      .then(data => {
-        console.log(data);
-        let admin = data.find(i => {
-          return window.localStorage.username === i.username;
-        })
-        if (admin) {
-          self.username = admin.username;
-          postPromise(`${window.localStorage.getItem("AUTHENTICATION_SERVICE")}/company/info`, { idCompany: admin.idCompany }, 'WI_AUTHENTICATE')
-            .then(company => {
-              $timeout(() => {
-                $rootScope.taxonomies = company.taxonomies || {};
-                console.log("====", company)
-                self.storageDatabaseAdmin = {
-                  company: company.name,
-                  directory: company.storage_location,
-                  whereami: "WI_STORAGE_ADMIN",
-                }
-              })
-            })
+    self.getListUser();
+    let interval;
+    function getUnsynced() {
+      if (!window.localStorage.token) {
+        clearInterval(interval);
+        return;
+      }
+      self.adminProjectStorage.httpPost(`${window.localStorage.getItem("FILE_MANAGER")}/submit/get-status`, null, function (res) {
+        if (!res.data.error) {
+          self.unsyncedCount = res.data.unsynced;
         }
-        $timeout(() => {
-          self.listUser = data;
-        })
-        let interval;
-        function getUnsynced() {
-          if (!window.localStorage.token) {
-            clearInterval(interval);
-            return;
-          }
-          self.adminProjectStorage.httpPost(`${window.localStorage.getItem("FILE_MANAGER")}/submit/get-status`, null, function (res) {
-            if (!res.data.error) {
-              self.unsyncedCount = res.data.unsynced;
-            }
-          }, { silent: true });
-        }
-        setTimeout(() => {
-          getUnsynced();
-          interval = setInterval(getUnsynced, 10000);
-        }, 1000);
-      })
-      .catch((err) => {
-        wiLogin.doLogin({ redirectUrl: window.location.origin });
-        // if (err.status === 401) {
-        //   delete window.localStorage.rememberAuth;
-        //   wiDialog.authenticationDialog(function (userInfo) {
-        //     onInit();
-        //   }, { 'whoami': 'data-administrator-service' })
-        // }
-      });
+      }, { silent: true });
+    }
+    setTimeout(() => {
+      getUnsynced();
+      interval = setInterval(getUnsynced, 10000);
+    }, 1000);
 
     if (!window.localStorage.getItem('currentTheme')) {
       window.localStorage.setItem('currentTheme', 'light');
@@ -269,22 +235,38 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
       .map((_, idx) => idx + 1));
     return _verifyTableRowHeaders;
   }
-  this.reload = function () {
+  this.getListUser = function () {
     self.requesting = true;
     postPromise(`${window.localStorage.getItem("AUTHENTICATION_SERVICE")}/user/list`, { token: window.localStorage.token }, 'WI_AUTHENTICATE')
       .then(data => {
+        const username = window.localStorage.username;
+        const user = data.find(u => u.username === username)
+        if (user) {
+          self.username = user.username;
+          postPromise(`${window.localStorage.getItem("AUTHENTICATION_SERVICE")}/company/info`, { idCompany: user.idCompany }, 'WI_AUTHENTICATE')
+            .then(company => {
+              $timeout(() => {
+                $rootScope.taxonomies = company.taxonomies || {};
+                self.storageDatabaseAdmin = {
+                  company: company.name,
+                  directory: company.storage_location,
+                  whereami: "WI_STORAGE_ADMIN",
+                }
+              })
+            })
+        }
         $timeout(() => {
+          if (user && user.role === 3.3) {
+            // View and download role
+            self.listUser = [user];
+            return;
+          }
           self.listUser = data;
         })
       })
       .catch((err) => {
-        if (err.status === 401) {
-          wiLogin.doLogin({ redirectUrl: window.location.origin });
-          // delete window.localStorage.rememberAuth;
-          // wiDialog.authenticationDialog(function (userInfo) {
-          //   onInit();
-          // }, { 'whoami': 'data-administrator-service' })
-        }
+        if (err.status === 401) wiLogin.doLogin({ redirectUrl: window.location.origin });
+        console.error(err);
       })
       .finally(() => {
         self.requesting = false;
@@ -339,15 +321,15 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
   self.storage_databases = {}
   this.copyOrCut = async function (action) {
     if (!self.currentUser.selectedList) return;
-    const res = await new Promise(resolve => self.currentUser.httpGet(self.currentUser.checkPermissionUrl + 'update', resolve));
-    if (res.data.error) return;
+    // const res = await new Promise(resolve => self.currentUser.httpGet(self.currentUser.checkPermissionUrl + 'update', resolve));
+    // if (res.data.error) return;
     self.fromUser = self.currentUser;
-    console.log("=== copy ", self.fromUser.storageDatabase.directory);
     self.pasteList = self.currentUser.selectedList.map((l => ({
       ...l,
       path: self.fromUser.storageDatabase.company + "/" + self.fromUser.storageDatabase.directory + l.path,
     })));
     self.pasteList.action = action;
+    self.pasteList.user = self.currentUser;
     // console.log(self.pasteList)
 
   }
@@ -370,6 +352,7 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
   this.changeStyle = changeStyle;
   this.pasting = false;
   this.paste = function () {
+    if (self.pasteList.user === self.currentUser) return;
     // console.log('paste ', self.currentUser.storageDatabase.directory);
     if (self.pasteList && self.currentUser) {
       self.pasting = true;
