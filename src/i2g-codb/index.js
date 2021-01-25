@@ -56,9 +56,8 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
   self.$scope = $scope
   this.fileManager = window.localStorage.getItem("FILE_MANAGER");
   this.previewUrl = window.localStorage.getItem("PREVIEW_URL");
-  this.admin;
-  this.user;
-  this.currentUser = this.admin;
+  this.user = null;
+  this.currentUser = null;
   this.fromUser = null;
   this.listProjectStorage = [];
   self.verifyStatus = 'unsynced'
@@ -71,6 +70,7 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
     onInit();
     TimeCtrl();
   }, 1000);
+  updateSetting();
 
   // }
 
@@ -86,47 +86,46 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
   }
   setInterval(TimeCtrl, 60 * 1000);
   async function updateVersion() {
-		let oldVersion = localStorage.getItem('VER') || localStorage.getItem('VERSION')
-		let newVersion = await new Promise((resolve) => {
-			$http({
-				method: 'GET',
-				url: window.location + 'i2g.version',
-				cache: false
-			})
-			.then(res => {
-				res ? resolve(res.data) : resolve(null)
-			})
-			.catch(err => {
-				resolve(null)
-			})
-		})
-		if(!newVersion) return
-		if(newVersion != oldVersion) {
-			await new Promise((resolve) => {
-				let dialog = ngDialog.open({
-					template: 'templateVersion',
-					className: 'ngdialog-theme-default',
-					showClose: false,
+    let oldVersion = localStorage.getItem('VER') || localStorage.getItem('VERSION')
+    let newVersion = await new Promise((resolve) => {
+      $http({
+        method: 'GET',
+        url: window.location + 'i2g.version',
+        cache: false
+      })
+        .then(res => {
+          res ? resolve(res.data) : resolve(null)
+        })
+        .catch(err => {
+          resolve(null)
+        })
+    })
+    if (!newVersion) return
+    if (newVersion != oldVersion) {
+      await new Promise((resolve) => {
+        let dialog = ngDialog.open({
+          template: 'templateVersion',
+          className: 'ngdialog-theme-default',
+          showClose: false,
           scope: $scope,
           closeByEscape: false,
           closeByDocument: false
-				})
-				self.acceptRefresh = function() {
-					localStorage.setItem('VER', newVersion)
-					location.reload(true)
-					// resolve()
-				}
-				self.cancelRefresh = function() {
-					dialog.close()
-					resolve()
-				}
-			})
+        })
+        self.acceptRefresh = function () {
+          localStorage.setItem('VER', newVersion)
+          location.reload(true)
+          // resolve()
+        }
+        self.cancelRefresh = function () {
+          dialog.close()
+          resolve()
+        }
+      })
 
-		}
-	}
+    }
+  }
   async function onInit() {
     await updateVersion()
-    updateSetting();
     self.getListUser();
     let interval;
     function getUnsynced() {
@@ -219,7 +218,7 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
           return {
             type: 'custom',
             value: desDir || 'Default',
-            style: { color:  desDir ? 'green' : null }
+            style: { color: desDir ? 'green' : null }
           }
         default:
           return "this default";
@@ -242,6 +241,7 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
         const username = window.localStorage.username;
         const user = data.find(u => u.username === username)
         if (user) {
+          self.user = user;
           self.username = user.username;
           postPromise(`${window.localStorage.getItem("AUTHENTICATION_SERVICE")}/company/info`, { idCompany: user.idCompany }, 'WI_AUTHENTICATE')
             .then(company => {
@@ -256,8 +256,7 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
             })
         }
         $timeout(() => {
-          if (user && user.role === 3.3) {
-            // View and download role
+          if (self.isViewOnly()) {
             self.listUser = [user];
             return;
           }
@@ -271,6 +270,11 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
       .finally(() => {
         self.requesting = false;
       })
+  }
+  this.isViewOnly = function () {
+    // View and download role
+    if (!self.user) return true;
+    return self.user.role === 3.3
   }
 
   this.getLabel = function (node) {
@@ -321,6 +325,10 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
   self.storage_databases = {}
   this.copyOrCut = async function (action) {
     if (!self.currentUser.selectedList) return;
+    if (self.isViewOnly() && self.currentUser.storageDatabase !== self.storageDatabaseAdmin) {
+      toastr.error('No permission')
+      return;
+    }
     // const res = await new Promise(resolve => self.currentUser.httpGet(self.currentUser.checkPermissionUrl + 'update', resolve));
     // if (res.data.error) return;
     self.fromUser = self.currentUser;
@@ -352,7 +360,10 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
   this.changeStyle = changeStyle;
   this.pasting = false;
   this.paste = function () {
-    if (self.pasteList.user === self.currentUser) return;
+    if (self.isViewOnly() && self.currentUser.storageDatabase === self.storageDatabaseAdmin) {
+      toastr.error('No permission')
+      return;
+    }
     // console.log('paste ', self.currentUser.storageDatabase.directory);
     if (self.pasteList && self.currentUser) {
       self.pasting = true;
@@ -360,10 +371,14 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
         case 'copy':
           async.eachSeries(self.pasteList, (file, next) => {
             try {
-              let from = `from=${encodeURIComponent(file.path)}&`;
-              let dest = `dest=${encodeURIComponent(self.currentUser.storageDatabase.company + '/' + self.currentUser.storageDatabase.directory + '/' + self.currentUser.currentPath.map(c => c.rootName).join('/'))}`;
-
-              self.fromUser.httpGet(`${self.currentUser.copyUrl + from + dest}&skipCheckingUrl=${encodeURIComponent(true)}`, res => {
+              const url = new URL(self.currentUser.copyUrl)
+              url.searchParams.set('from', file.path)
+              url.searchParams.set('dest', self.currentUser.storageDatabase.company + '/' + self.currentUser.storageDatabase.directory + '/' + self.currentUser.currentPath.map(c => c.rootName).join('/'))
+              url.searchParams.set('skipCheckingUrl', true)
+              if (self.isViewOnly() && self.currentUser.storageDatabase.name.endsWith(self.user.username)) {
+                url.searchParams.set('skipPerm', true)
+              }
+              self.fromUser.httpGet(url.toString(), res => {
                 if (!res.data.error && res.data.status === 'IN_PROGRESS') {
                   self.currentUser.addProcessing(res.data);
                 }
@@ -461,7 +476,9 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
       createdBy: 'User'
     });
     self.currentTab = self.listProjectStorage.length - 1;
-    self.currentUser = null;
+    setTimeout(() => {
+      self.onClickFileExplorer(self.listProjectStorage[self.currentTab].container);
+    });
   }
   this.removeProjectStorage = function (index) {
     // $timeout(() => {
