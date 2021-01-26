@@ -23,7 +23,7 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "@revotechuet/misc-component-vue": "^1.1.28",
+    "@revotechuet/misc-component-vue": "^1.1.30",
     "jquery": "^3.4.1",
     "vue": "^2.6.11"
   },
