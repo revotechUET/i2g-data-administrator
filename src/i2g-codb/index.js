@@ -256,7 +256,7 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
             })
         }
         $timeout(() => {
-          if (self.isViewOnly()) {
+          if (self.onlyMe()) {
             self.listUser = [user];
             return;
           }
@@ -271,10 +271,15 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
         self.requesting = false;
       })
   }
+  this.onlyMe = function () {
+    // List this user only
+    if (!self.user) return true;
+    return self.user.role >= 3
+  }
   this.isViewOnly = function () {
     // View and download role
     if (!self.user) return true;
-    return self.user.role === 3.3
+    return [3.1, 3.3].includes(self.user.role)
   }
 
   this.getLabel = function (node) {
