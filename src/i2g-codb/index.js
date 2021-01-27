@@ -1,6 +1,5 @@
-import Vue from 'vue';
 import { WiTree, WiDroppable, wiLoginClient } from '@revotechuet/misc-component-vue';
-import { wiid as genWiid } from '@revotechuet/misc-component-vue';
+import { Vue, wiid as genWiid } from '@revotechuet/misc-component-vue';
 // import 'wi-css'
 const wiLogin = new wiLoginClient('WI_PROJECT_STORAGE_CLIENT')
 const moduleName = 'i2g-codb';
@@ -274,7 +273,7 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
   this.onlyMe = function () {
     // List this user only
     if (!self.user) return true;
-    return self.user.role >= 3
+    return self.user.role > 3
   }
   this.isViewOnly = function () {
     // View and download role
