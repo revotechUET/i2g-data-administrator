@@ -3,8 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Corporate Database</title>
-    <link rel="icon" href="i2g_fav.png" type="image/png">
+    <title><%= htmlWebpackPlugin.options.title %></title>
     <script src="./bower_components/jquery/dist/jquery.min.js"></script>
     <script src="./bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -14,16 +13,11 @@
     <script src="./bower_components/angular-sanitize/angular-sanitize.min.js"></script>
     <script src="./bower_components/angular-resizable/angular-resizable.min.js"></script>
     <script src="./bower_components/toastr/toastr.js"></script>
-    <!-- <script src="./bower_components/angular-bootstrap/ui-bootstrap.min.js"></script> -->
     <script src="./bower_components/ng-file-upload/ng-file-upload.min.js"></script>
     <script src='./bower_components/ng-dialog/js/ngDialog.min.js'></script>
     <script src="./bower_components/angular-modal-service/dst/angular-modal-service.min.js"></script>
     <script src="./bower_components/resize-sensor/ResizeSensor.min.js"></script>
-    <!-- <script src="./bower_components/proj4/dist/proj4.js"></script> -->
-    <!-- <script src="./bower_components/katex/dist/katex.min.js"></script> -->
     <script src="./bower_components/virtual-list/vlist.js"></script>
-    <!-- <script src="./bower_components/wi-vlist/index.js"></script> -->
-    <!-- <script src='./bower_components/d3/d3.min.js'></script> -->
     <script src="./bower_components/moment/min/moment.min.js"></script>
     <script src="bower_components/async/dist/async.min.js"></script>
     <script src="./bower_components/misc-component/dist/misc-components.js"></script>
@@ -38,7 +32,6 @@
     <link rel="stylesheet" href="./bower_components/toastr/toastr.css">
     <link rel="stylesheet" href="./bower_components/angular-ui-select/dist/select.css">
 </head>
-
 <body>
     <div ng-app="i2gDataApp" style="width: 100vw;height: 100vh;position: relative;">
         <i2g-codb max-tab="10">

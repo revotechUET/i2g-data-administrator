@@ -26,29 +26,19 @@ module.exports = {
 			}
 		]
 	},
-  plugins: [
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: 'development',
-    }),
+	plugins: [
+		new webpack.EnvironmentPlugin({
+			NODE_ENV: 'development',
+		}),
 		new CleanWebpackPlugin({
 			cleanOnceBeforeBuildPatterns: ['**/*', '!bower_components/**'],
 		}),
-		new CopyPlugin({
-			patterns: [
-				{
-					from: 'public',
-					cacheTransform: true,
-					force: true,
-					globOptions: {
-						ignore: ['index.html'],
-					},
-				},
-			],
-		}),
+
 		new HtmlWebpackPlugin({
-			template: './public/index.html',
+			title: 'Corporate Database',
+			favicon: './public/i2g_fav.png',
 		}),
-  ],
+	],
 	resolve: {
 		symlinks: false,
 	},
