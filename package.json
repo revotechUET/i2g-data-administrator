@@ -24,8 +24,27 @@
     "webpack-cli": "^4.4.0"
   },
   "dependencies": {
+    "@revotechuet/file-explorer": "^1.0.6",
+    "@revotechuet/misc-component": "^1.3.9",
     "@revotechuet/misc-component-vue": "^1.2.0",
+    "angular": "^1.8.2",
+    "angular-modal-service": "^0.15.6",
+    "angular-resizable": "^1.2.0",
+    "angular-sanitize": "^1.8.2",
+    "async": "^3.2.0",
+    "bootstrap": "^4.6.0",
+    "font-awesome": "^4.7.0",
+    "html-webpack-deploy-plugin": "^2.0.8",
     "jquery": "^3.4.1",
+    "jquery-ui": "^1.12.1",
+    "lodash": "^4.17.20",
+    "moment": "^2.29.1",
+    "ng-dialog": "^1.4.0",
+    "ng-file-upload": "^12.2.13",
+    "resize-sensor": "0.0.6",
+    "toastr": "^2.1.4",
+    "ui-select": "^0.19.8",
+    "virtual-list": "^1.0.1",
     "vue": "^2.6.11"
   },
   "sideEffects": []
