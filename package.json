@@ -32,7 +32,7 @@
     "angular-resizable": "^1.2.0",
     "angular-sanitize": "^1.8.2",
     "async": "^3.2.0",
-    "bootstrap": "^4.6.0",
+    "bootstrap": "^3.4.1",
     "font-awesome": "^4.7.0",
     "html-webpack-deploy-plugin": "^2.0.8",
     "jquery": "^3.4.1",
