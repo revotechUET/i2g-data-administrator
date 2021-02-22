@@ -24,7 +24,7 @@
     "webpack-cli": "^4.4.0"
   },
   "dependencies": {
-    "@revotechuet/file-explorer": "^1.0.6",
+    "@revotechuet/file-explorer": "^1.0.7",
     "@revotechuet/misc-component": "^1.3.9",
     "@revotechuet/misc-component-vue": "^1.2.0",
     "angular": "^1.8.2",
