@@ -64,6 +64,7 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
   self.currentFontSize = '12px';
   self.selectedFontSize = 12;
   self.autoChangeTheme = true;
+  self.storageInfo = {};
   wiLogin.doLogin({ redirectUrl: window.location.origin, whoami: "i2g-data-administrator", loginPage: window.localStorage.getItem("AUTHENTICATION_HOME") });
   setTimeout(() => {
     onInit();
@@ -135,6 +136,11 @@ function i2gCodbController($rootScope, $scope, wiApi, $timeout, $http, wiDialog,
       self.adminProjectStorage.httpPost(`${window.localStorage.getItem("FILE_MANAGER")}/submit/get-status`, null, function (res) {
         if (!res.data.error) {
           self.unsyncedCount = res.data.unsynced;
+        }
+      }, { silent: true });
+      self.adminProjectStorage.httpPost(`${window.localStorage.getItem("FILE_MANAGER")}/on-premise-storage-info`, null, function (res) {
+        if (!res.data.error) {
+          self.storageInfo = res.data
         }
       }, { silent: true });
     }

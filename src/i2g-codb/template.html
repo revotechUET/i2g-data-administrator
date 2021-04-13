@@ -25,6 +25,13 @@
             >
         </vue-component>
         </div>
+        <div ng-show="self.storageInfo.Size" class="storage-info" style="margin: 0; padding: 20px 0px 20px 0px; background-color: lightgrey; height: 70px;">
+            <div class="progress" style="margin: 0px 10px 0px 10px; text-align: right;" hover="Used: 36GB Available: 100GB"><b>{{self.storageInfo['Size']}}</b>
+                <a class="progress-bar" role="progressbar" style="width: {{self.storageInfo['Use%']}}" aria-valuemax="100" aria-valuemin="0">
+                    {{self.storageInfo['Use%']}}
+                </a>
+            </div>
+        </div>
     </div>
     <div class="side-right">
         <div class="menu">
