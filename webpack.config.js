@@ -8,7 +8,7 @@ const isProduction = (process.env.NODE_ENV || '').toLowerCase().includes('prod')
 module.exports = {
 	entry: './src/index.js',
 	output: {
-		filename: 'main.[hash:8].js',
+		filename: 'main.[contenthash:8].js',
 		path: __dirname + '/dist'
 	},
 	mode: 'development',
